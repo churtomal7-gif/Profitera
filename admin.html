@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; outline: none !important; }
+        body { background: #020905; color: #ffffff; padding: 20px; min-height: 100vh; }
+        
+        .admin-container { max-width: 700px; margin: 0 auto; }
+        
+        .admin-header {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #00ff87;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(0, 255, 135, 0.3);
+        }
+
+        .admin-tabs {
+            display: flex;
+            background: rgba(4, 28, 16, 0.8);
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            border-radius: 14px;
+            padding: 6px;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px;
+            color: #799988;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: rgba(0, 255, 135, 0.15);
+            color: #00ff87;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+        }
+
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+
+        .card { 
+            background: rgba(4, 28, 16, 0.65); 
+            border: 1px solid rgba(0, 255, 135, 0.18); 
+            padding: 20px; 
+            border-radius: 16px; 
+            margin-bottom: 16px; 
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 { 
+            font-size: 15px; 
+            color: #00ff87; 
+            margin-bottom: 14px; 
+            font-family: 'Orbitron', sans-serif; 
+            letter-spacing: 0.5px;
+        }
+
+        .form-group { margin-bottom: 14px; }
+        .input-label { font-size: 12px; font-weight: 700; color: #799988; margin-bottom: 6px; display: block; }
+
+        input { 
+            width: 100%;
+            background: rgba(0, 255, 135, 0.05); 
+            border: 1px solid rgba(0, 255, 135, 0.2); 
+            padding: 12px 14px; 
+            border-radius: 10px; 
+            color: #fff; 
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input:focus { border-color: #00ff87; }
+
+        button.action-btn { 
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); 
+            color: #01140a; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 10px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+        }
+
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(0,255,135,0.1); font-size: 13px; }
+        th { color: #00ff87; font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 0.5px; }
+        
+        .approve-btn { background: #00ff87; color: #01140a; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 800; cursor: pointer; font-size: 11px; }
+        .approve-btn:disabled { background: #4a6655; color: #99b3a3; cursor: not-allowed; }
+        .status-pending { color: #ffa502; font-weight: 700; background: rgba(255,165,2,0.1); padding: 3px 8px; border-radius: 4px; }
+        .status-approved { color: #00ff87; font-weight: 700; background: rgba(0,255,135,0.1); padding: 3px 8px; border-radius: 4px; }
+        .time-text { font-size: 10px; color: #799988; display: block; margin-top: 2px; }
+
+        .custom-alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75); display: none; align-items: center; justify-content: center; z-index: 11000; backdrop-filter: blur(4px);
+        }
+        .custom-alert-box {
+            background: linear-gradient(135deg, #042810 0%, #02140a 100%);
+            border: 2px solid #00ff87; border-radius: 16px; width: 85%; max-width: 320px; padding: 22px; text-align: center;
+        }
+        .custom-alert-msg { font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 20px; line-height: 1.5; }
+        .custom-alert-btn {
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            color: #01140a; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; font-size: 13px; cursor: pointer; text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="admin-container">
+        <div class="admin-header">Admin Panel</div>
+
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('depositTab', this)">Deposit</button>
+            <button class="tab-btn" onclick="switchTab('withdrawTab', this)">Withdraw</button>
+            <button class="tab-btn" onclick="switchTab('numberTab', this)">Number Change</button>
+        </div>
+
+        <!-- DEPOSIT TAB -->
+        <div id="depositTab" class="tab-pane active">
+            <div class="card">
+                <h2>Deposit Requests & Management</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User / Email</th>
+                                <th>Amount & TrxID</th>
+                                <th>Status & Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="depositTableBody">
+                            <tr><td colspan="4" style="text-align:center; color:#799988;">Loading deposits...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- WITHDRAW TAB -->
+        <div id="withdrawTab" class="tab-pane">
+            <div class="card">
+                <h2>Withdraw Requests</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>User / Number</th>
+                                <th>Amount / Method</th>
+                                <th>Status & Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="withdrawTableBody">
+                            <tr><td colspan="4" style="text-align:center; color:#799988;">Loading withdraws...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NUMBER TAB -->
+        <div id="numberTab" class="tab-pane">
+            <div class="card">
+                <h2>Change Payment Numbers</h2>
+                <div class="form-group">
+                    <label class="input-label">bKash Number</label>
+                    <input type="text" id="bkashNum" placeholder="Enter bKash agent number">
+                </div>
+                <div class="form-group">
+                    <label class="input-label">Nogod Number</label>
+                    <input type="text" id="nogodNum" placeholder="Enter Nogod agent number">
+                </div>
+                <button class="action-btn" onclick="updateNumbers()">Save Numbers</button>
+            </div>
+
+            <div class="card" style="margin-top: 16px;">
+                <h2>Number Change History</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>bKash</th>
+                                <th>Nogod</th>
+                                <th>Update Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="numberHistoryBody">
+                            <tr><td colspan="3" style="text-align:center; color:#799988;">Loading history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-msg" id="customAlertMsg">Message</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, getDoc, query, orderBy, where, increment, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.showAlert = function(msg) {
+            document.getElementById('customAlertMsg').innerText = msg;
+            document.getElementById('customAlert').style.display = 'flex';
+        }
+        window.closeCustomAlert = function() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        window.switchTab = function(tabId, btn) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        window.onload = function() {
+            loadNumbersAndInfo();
+            loadDeposits();
+            loadWithdraws();
+            loadNumberHistory();
+        }
+
+        async function loadNumbersAndInfo() {
+            try {
+                const docSnap = await getDoc(doc(db, "Settings", "paymentNumbers"));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('bkashNum').value = data.bkash || '';
+                    document.getElementById('nogodNum').value = data.nogod || '';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        window.updateNumbers = async function() {
+            const bkash = document.getElementById('bkashNum').value.trim();
+            const nogod = document.getElementById('nogodNum').value.trim();
+            const currentTimeStr = new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' });
+
+            try {
+                await setDoc(doc(db, "Settings", "paymentNumbers"), { bkash, nogod, lastUpdated: currentTimeStr });
+                
+                await addDoc(collection(db, "NumberChangeHistory"), {
+                    bkash: bkash,
+                    nogod: nogod,
+                    timestamp: serverTimestamp(),
+                    timeFormatted: currentTimeStr
+                });
+
+                showAlert('Numbers updated successfully!');
+                loadNumbersAndInfo();
+                loadNumberHistory();
+            } catch (e) { showAlert('Error: ' + e.message); }
+        }
+
+        async function loadNumberHistory() {
+            const tbody = document.getElementById('numberHistoryBody');
+            try {
+                const q = query(collection(db, "NumberChangeHistory"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:#799988;">No history found</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = "";
+                querySnapshot.forEach((resDoc) => {
+                    const data = resDoc.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.bkash || 'N/A'}</td>
+                        <td>${data.nogod || 'N/A'}</td>
+                        <td><span class="time-text">${data.timeFormatted || 'Recent'}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) { 
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:red;">Failed to load history</td></tr>`; 
+            }
+        }
+
+        async function loadDeposits() {
+            const tbody = document.getElementById('depositTableBody');
+            try {
+                const q = query(collection(db, "Deposits"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#799988;">No deposit requests</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = "";
+                querySnapshot.forEach((resDoc) => {
+                    const data = resDoc.data();
+                    const isSuccess = data.status === "Success" || data.status === "Approved";
+                    const timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('en-US', { timeZone: 'Asia/Dhaka', hour: 'numeric', minute: 'numeric', hour12: true }) : 'Just now';
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${data.email || data.userId || 'Unknown'}</strong><span class="time-text">${data.method}</span></td>
+                        <td>৳${data.amount}<span class="time-text">Trx: ${data.trxId}</span></td>
+                        <td><span class="${isSuccess ? 'status-approved' : 'status-pending'}">${data.status}</span><span class="time-text">${timeStr}</span></td>
+                        <td><button id="dep-btn-${resDoc.id}" class="approve-btn" ${isSuccess ? 'disabled' : ''} onclick="approveDeposit('${resDoc.id}')">${isSuccess ? 'Done' : 'Approve'}</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Failed to load</td></tr>`; }
+        }
+
+        window.approveDeposit = async function(id) {
+            const btn = document.getElementById(`dep-btn-${id}`);
+            if (btn) btn.disabled = true; // Immediate disable on click to prevent multi-tapping
+
+            try {
+                const depRef = doc(db, "Deposits", id);
+                const depSnap = await getDoc(depRef);
+                if (!depSnap.exists()) return;
+
+                const depData = depSnap.data();
+
+                // Double check if already approved/success to prevent double additions
+                if (depData.status === "Success" || depData.status === "Approved") {
+                    showAlert('This deposit has already been approved!');
+                    loadDeposits();
+                    return;
+                }
+
+                const userIdentifier = depData.userId || depData.email;
+                const amountToAdd = Number(depData.amount) || 0;
+
+                let userDocRef = doc(db, "Users", String(userIdentifier));
+                let userSnap = await getDoc(userDocRef);
+
+                if (!userSnap.exists()) {
+                    const q1 = query(collection(db, "Users"), where("email", "==", userIdentifier));
+                    const q1Snap = await getDocs(q1);
+                    if (!q1Snap.empty) {
+                        userDocRef = q1Snap.docs[0].ref;
+                        userSnap = q1Snap.docs[0];
+                    } else {
+                        const q2 = query(collection(db, "Users"), where("phoneNumber", "==", userIdentifier));
+                        const q2Snap = await getDocs(q2);
+                        if (!q2Snap.empty) {
+                            userDocRef = q2Snap.docs[0].ref;
+                            userSnap = q2Snap.docs[0];
+                        }
+                    }
+                }
+
+                if (userSnap.exists()) {
+                    await updateDoc(userDocRef, { balance: increment(amountToAdd) });
+                }
+
+                await updateDoc(depRef, { status: "Success" });
+                showAlert('Deposit Approved & Balance Added!');
+                loadDeposits();
+            } catch (e) { 
+                if (btn) btn.disabled = false; // Re-enable if error occurs
+                showAlert('Error: ' + e.message); 
+            }
+        }
+
+        async function loadWithdraws() {
+            const tbody = document.getElementById('withdrawTableBody');
+            try {
+                const q = query(collection(db, "Withdraws"), orderBy("timestamp", "desc"));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#799988;">No withdraw requests</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = "";
+                querySnapshot.forEach((resDoc) => {
+                    const data = resDoc.data();
+                    const isSuccess = data.status === "Success" || data.status === "Approved";
+                    const timeStr = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('en-US', { timeZone: 'Asia/Dhaka', hour: 'numeric', minute: 'numeric', hour12: true }) : 'Just now';
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${data.email || data.userId || 'Unknown'}</strong><span class="time-text">${data.accountNumber}</span></td>
+                        <td>৳${data.amount}<span class="time-text">${data.method}</span></td>
+                        <td><span class="${isSuccess ? 'status-approved' : 'status-pending'}">${data.status}</span><span class="time-text">${timeStr}</span></td>
+                        <td><button id="wit-btn-${resDoc.id}" class="approve-btn" ${isSuccess ? 'disabled' : ''} onclick="approveWithdraw('${resDoc.id}')">${isSuccess ? 'Done' : 'Approve'}</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) {}
+        }
+
+        window.approveWithdraw = async function(id) {
+            const btn = document.getElementById(`wit-btn-${id}`);
+            if (btn) btn.disabled = true;
+
+            try {
+                const witRef = doc(db, "Withdraws", id);
+                const witSnap = await getDoc(witRef);
+                if (!witSnap.exists()) return;
+
+                if (witSnap.data().status === "Success" || witSnap.data().status === "Approved") {
+                    showAlert('This withdraw has already been approved!');
+                    loadWithdraws();
+                    return;
+                }
+
+                await updateDoc(witRef, { status: "Success" });
+                showAlert('Withdraw Approved!');
+                loadWithdraws();
+            } catch (e) { 
+                if (btn) btn.disabled = false;
+                showAlert('Error: ' + e.message); 
+            }
+        }
+    </script>
+</body>
+</html>

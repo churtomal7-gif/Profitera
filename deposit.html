@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Deposit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; outline: none !important; }
+        body { background: #020905; color: #ffffff; padding-bottom: 50px; min-height: 100vh; }
+        
+        .top-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: rgba(4, 28, 16, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15); position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn { color: #00ff87; font-size: 16px; text-decoration: none; width: 32px; height: 32px; background: rgba(0, 255, 135, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 135, 0.2); }
+        .header-title { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 700; color: #ffffff; }
+
+        .deposit-container { padding: 16px; max-width: 500px; margin: 0 auto; }
+        
+        /* Notice Card Line by Line Styling */
+        .notice-card { 
+            background: rgba(0, 255, 135, 0.05); 
+            border: 1px solid rgba(0, 255, 135, 0.2); 
+            border-radius: 14px; 
+            padding: 14px 16px; 
+            margin-bottom: 16px; 
+            font-size: 13px; 
+            color: #d1ebd9; 
+            line-height: 1.8; 
+        }
+        .notice-card strong { color: #00ff87; display: block; margin-bottom: 4px; font-size: 14px; font-family: 'Orbitron', sans-serif; }
+        .notice-card p { margin-bottom: 6px; }
+
+        .deposit-card { background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.18); border-radius: 16px; padding: 18px; margin-bottom: 16px; backdrop-filter: blur(10px); }
+        .section-label { font-size: 12px; font-weight: 700; color: #799988; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+        /* Methods Grid with Logos */
+        .methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+        .method-box { 
+            background: rgba(0, 255, 135, 0.03); 
+            border: 1.5px solid rgba(0, 255, 135, 0.15); 
+            border-radius: 12px; 
+            padding: 12px; 
+            text-align: center; 
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .method-box.active { background: rgba(0, 255, 135, 0.12); border-color: #00ff87; box-shadow: 0 0 10px rgba(0, 255, 135, 0.2); }
+        .method-box img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; }
+        .method-name { font-size: 13px; font-weight: 700; color: #ffffff; }
+
+        .agent-box { background: rgba(2, 9, 5, 0.6); border: 1px dashed rgba(0, 255, 135, 0.4); border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .agent-info span { font-size: 11px; color: #799988; }
+        .agent-info h4 { font-family: 'Orbitron', sans-serif; font-size: 15px; color: #00ff87; margin-top: 2px; }
+        .copy-btn { background: rgba(0, 255, 135, 0.15); border: 1px solid rgba(0, 255, 135, 0.3); color: #00ff87; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+
+        .form-group { margin-bottom: 14px; }
+        input { width: 100%; background: rgba(0, 255, 135, 0.05); border: 1px solid rgba(0, 255, 135, 0.2); padding: 12px 14px; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; }
+        input:focus { border-color: #00ff87; }
+
+        .submit-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 14px; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 6px; }
+
+        .history-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00ff87; margin-bottom: 10px; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid rgba(0,255,135,0.1); font-size: 12px; }
+        th { color: #00ff87; font-family: 'Orbitron', sans-serif; font-size: 10px; }
+        .status-pending { color: #ffa502; font-weight: 700; }
+        .status-success { color: #00ff87; font-weight: 700; }
+
+        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: none; align-items: center; justify-content: center; z-index: 11000; }
+        .custom-alert-box { background: linear-gradient(135deg, #042810 0%, #02140a 100%); border: 2px solid #00ff87; border-radius: 16px; width: 85%; max-width: 320px; padding: 22px; text-align: center; }
+        .custom-alert-msg { font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 20px; }
+        .custom-alert-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <a href="profile.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Deposit Money</div>
+        <div style="width:32px"></div>
+    </div>
+
+    <div class="deposit-container">
+        
+        <!-- Updated Line-by-Line Notice -->
+        <div class="notice-card">
+            <strong><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশিকা:</strong>
+            <p>• প্রথমে উপরের যেকোনো পেমেন্ট অপشن সিলেক্ট করুন।</p>
+            <p>• তারপর যে নম্বর দেওয়া আছে সেই নম্বরে ক্যাশআউট করুন।</p>
+            <p>• এরপর সেই নম্বরে যত টাকা পাঠিয়েছেন এবং ট্রানজেকশন আইডি বসান।</p>
+            <p>• সবশেষে সাবমিট করে কিছুক্ষণ অপেক্ষা করুন।</p>
+        </div>
+
+        <div class="deposit-card">
+            <span class="section-label">Select Method</span>
+            <div class="methods-grid">
+                <!-- bKash Method with Logo -->
+                <div class="method-box active" id="bkashMethod" onclick="selectMethod('bkash')">
+                    <img src="bkash.png" alt="bKash">
+                    <div class="method-name">bKash</div>
+                </div>
+                <!-- Nogod Method with Logo -->
+                <div class="method-box" id="nogodMethod" onclick="selectMethod('nogod')">
+                    <img src="nogod.png" alt="Nogod">
+                    <div class="method-name">Nogod</div>
+                </div>
+            </div>
+
+            <div class="agent-box">
+                <div class="agent-info">
+                    <span id="methodLabel">bKash Agent Number</span>
+                    <h4 id="agentNumberDisplay">Loading...</h4>
+                </div>
+                <button class="copy-btn" onclick="copyNumber()">Copy</button>
+            </div>
+
+            <div class="form-group">
+                <span class="section-label">Deposit Amount (BDT)</span>
+                <input type="number" id="depositAmount" placeholder="Enter amount">
+            </div>
+
+            <div class="form-group">
+                <span class="section-label">Transaction ID (TrxID)</span>
+                <input type="text" id="trxIdInput" placeholder="Enter TrxID">
+            </div>
+
+            <button class="submit-btn" onclick="submitDeposit()">Submit Deposit</button>
+        </div>
+
+        <!-- Deposit History Section -->
+        <div class="deposit-card">
+            <div class="history-title">My Deposit History</div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>TrxID</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userDepositHistory">
+                        <tr><td colspan="4" style="text-align:center; color:#799988;">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-msg" id="customAlertMsg">Message</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let selectedPaymentMethod = "bkash";
+        let agentNumbersData = { bkash: "", nogod: "" };
+        let currentUserId = "";
+        let currentUserEmail = "";
+
+        window.showAlert = function(msg) {
+            document.getElementById('customAlertMsg').innerText = msg;
+            document.getElementById('customAlert').style.display = 'flex';
+        }
+        window.closeCustomAlert = function() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        window.selectMethod = function(method) {
+            selectedPaymentMethod = method;
+            document.getElementById('bkashMethod').classList.remove('active');
+            document.getElementById('nogodMethod').classList.remove('active');
+            
+            if(method === 'bkash') {
+                document.getElementById('bkashMethod').classList.add('active');
+                document.getElementById('methodLabel').innerText = "bKash Agent Number";
+                document.getElementById('agentNumberDisplay').innerText = agentNumbersData.bkash || "Not Set";
+            } else {
+                document.getElementById('nogodMethod').classList.add('active');
+                document.getElementById('methodLabel').innerText = "Nogod Agent Number";
+                document.getElementById('agentNumberDisplay').innerText = agentNumbersData.nogod || "Not Set";
+            }
+        }
+
+        window.copyNumber = function() {
+            const numText = document.getElementById('agentNumberDisplay').innerText;
+            if(numText && numText !== "Not Set") {
+                navigator.clipboard.writeText(numText);
+                showAlert("Number copied!");
+            }
+        }
+
+        async function fetchAgentNumbers() {
+            try {
+                const docSnap = await getDoc(doc(db, "Settings", "paymentNumbers"));
+                if (docSnap.exists()) {
+                    agentNumbersData = docSnap.data();
+                    selectMethod('bkash');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                currentUserEmail = user.email || user.phoneNumber || user.uid;
+            } else {
+                currentUserId = localStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserUid") || localStorage.getItem("userEmail");
+                currentUserEmail = currentUserId;
+                if (!currentUserId) {
+                    window.location.href = "login.html";
+                    return;
+                }
+            }
+            fetchAgentNumbers();
+            loadUserHistory(currentUserId);
+        });
+
+        window.submitDeposit = async function() {
+            const amount = document.getElementById('depositAmount').value.trim();
+            const trxId = document.getElementById('trxIdInput').value.trim();
+
+            if (!currentUserId) {
+                showAlert("Session expired. Please log in again.");
+                return;
+            }
+            if (!amount || Number(amount) <= 0) {
+                showAlert("Enter a valid amount.");
+                return;
+            }
+            if (!trxId) {
+                showAlert("Enter the TrxID.");
+                return;
+            }
+
+            try {
+                const depositData = {
+                    userId: currentUserId,
+                    email: currentUserEmail,
+                    amount: Number(amount),
+                    method: selectedPaymentMethod.toUpperCase(),
+                    trxId: trxId,
+                    status: "Pending",
+                    timestamp: serverTimestamp()
+                };
+
+                await addDoc(collection(db, "Deposits"), depositData);
+                showAlert("Deposit request submitted successfully!");
+                
+                document.getElementById('depositAmount').value = '';
+                document.getElementById('trxIdInput').value = '';
+                loadUserHistory(currentUserId);
+            } catch (e) {
+                showAlert("Error: " + e.message);
+            }
+        }
+
+        async function loadUserHistory(userId) {
+            const tbody = document.getElementById('userDepositHistory');
+            try {
+                const q = query(collection(db, "Deposits"), where("userId", "==", userId));
+                const querySnapshot = await getDocs(q);
+                
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#799988;">No history found</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const isSuccess = data.status === "Success" || data.status === "Approved";
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.method}</td>
+                        <td>৳${data.amount}</td>
+                        <td>${data.trxId}</td>
+                        <td><span class="${isSuccess ? 'status-success' : 'status-pending'}">${data.status}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Failed to load history</td></tr>`;
+            }
+        }
+    </script>
+</body>
+</html>

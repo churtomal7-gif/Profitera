@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Income</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        body {
+            background: #020905;
+            color: #ffffff;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 18px;
+            background: rgba(4, 28, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        /* Income Container */
+        .income-container {
+            flex: 1;
+            padding: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Active Plan Cards List */
+        .active-plans-section {
+            margin-bottom: 20px;
+        }
+
+        .section-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #799988;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .active-plan-card {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .plan-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 255, 135, 0.1);
+        }
+
+        .plan-card-top h4 {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .count-badge {
+            font-size: 10px;
+            color: #60efff;
+            background: rgba(96, 239, 255, 0.1);
+            border: 1px solid rgba(96, 239, 255, 0.25);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .plan-card-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            font-size: 11px;
+            margin-bottom: 12px;
+        }
+
+        .plan-detail-box {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 8px 6px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .plan-detail-box span {
+            display: block;
+            font-size: 8.5px;
+            color: #799988;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .plan-detail-box p {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .plan-detail-box p.highlight {
+            color: #00ff87;
+        }
+
+        /* Plan-wise Claim Button */
+        .plan-claim-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            color: #01140a;
+            border: none;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 255, 135, 0.2);
+            transition: opacity 0.2s;
+        }
+
+        .plan-claim-btn:active {
+            opacity: 0.85;
+        }
+
+        .plan-claim-btn.claimed {
+            background: rgba(255, 255, 255, 0.08);
+            color: #799988;
+            cursor: not-allowed;
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* No History Box */
+        .no-data-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #799988;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            min-height: 200px;
+        }
+
+        /* Custom Dark Alert Popup Styles */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .custom-alert-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-alert-card {
+            width: 100%; max-width: 320px;
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 20px; padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
+        }
+
+        .custom-alert-icon {
+            width: 50px; height: 50px;
+            background: rgba(0, 255, 135, 0.1);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; color: #00ff87; font-size: 20px;
+        }
+
+        .custom-alert-title {
+            font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;
+        }
+
+        .custom-alert-message {
+            font-size: 12.5px; color: #c2d6cc; line-height: 1.5; margin-bottom: 20px;
+        }
+
+        .custom-alert-btn {
+            width: 100%; padding: 11px;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            border: none; border-radius: 12px;
+            color: #01140a; font-size: 12px; font-weight: 800;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
+            background: rgba(3, 20, 11, 0.95); backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(0, 255, 135, 0.2);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding: 0 10px;
+        }
+
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #618270; text-decoration: none; font-size: 10px; font-weight: 600; width: 20%; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 3px; }
+        .nav-item.active { color: #00ff87; }
+        .nav-item.home-btn { position: relative; top: -12px; }
+        .nav-item.home-btn .icon-box { width: 52px; height: 52px; background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(0, 255, 135, 0.5); border: 4px solid #020905; }
+        .nav-item.home-btn svg { width: 26px; height: 26px; fill: #01140a; margin-bottom: 0; }
+        .nav-item.home-btn span { color: #00ff87; font-weight: 800; margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-title">Income</div>
+    </div>
+
+    <!-- Income Content Section -->
+    <div class="income-container">
+        <!-- Active Plans List Container -->
+        <div class="active-plans-section" id="activePlansContainer" style="display: none;">
+            <div class="section-label">সক্রিয় প্লানসমূহ</div>
+            <div id="plansListContent"></div>
+        </div>
+
+        <!-- No History Box -->
+        <div class="no-data-box" id="noDataBox">
+            কোনো ইতিহাস নেই
+        </div>
+    </div>
+
+    <!-- Custom Alert Popup -->
+    <div class="custom-alert-overlay" id="customAlertBox">
+        <div class="custom-alert-card">
+            <div class="custom-alert-icon" id="customAlertIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="custom-alert-title" id="customAlertTitle">Success</div>
+            <div class="custom-alert-message" id="customAlertMsg">Message goes here...</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="income.html" class="nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Income</span>
+        </a>
+
+        <a href="refer.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>Refer</span>
+        </a>
+
+        <a href="dashboard.html" class="nav-item home-btn">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </div>
+            <span>Home</span>
+        </a>
+
+        <a href="task.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span>Task</span>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Account</span>
+        </a>
+    </div>
+
+    <!-- Firebase SDKs & Script Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userData = {};
+        let isClaiming = false; // Double tap protection lock
+
+        const planDailyIncome = {
+            "Plan 1": 75,
+            "Plan 2": 190,
+            "Plan 3": 540,
+            "Plan 4": 1140,
+            "Plan 5": 1950,
+            "Plan 6": 4640,
+            "Plan 7": 10300,
+            "Plan 8": 20000
+        };
+
+        window.showAlert = function(title, message, type = "success") {
+            const alertBox = document.getElementById("customAlertBox");
+            const titleElem = document.getElementById("customAlertTitle");
+            const msgElem = document.getElementById("customAlertMsg");
+            const iconElem = document.getElementById("customAlertIcon");
+
+            if (titleElem) titleElem.innerText = title;
+            if (msgElem) msgElem.innerText = message;
+            
+            if (iconElem) {
+                if (type === "error") {
+                    iconElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                    iconElem.style.color = "#ff4d4d";
+                    iconElem.style.borderColor = "rgba(255, 77, 77, 0.4)";
+                    iconElem.style.background = "rgba(255, 77, 77, 0.1)";
+                } else {
+                    iconElem.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    iconElem.style.color = "#00ff87";
+                    iconElem.style.borderColor = "rgba(0, 255, 135, 0.3)";
+                    iconElem.style.background = "rgba(0, 255, 135, 0.1)";
+                }
+            }
+            if (alertBox) alertBox.classList.add("active");
+        };
+
+        window.closeCustomAlert = function() {
+            const alertBox = document.getElementById("customAlertBox");
+            if (alertBox) alertBox.classList.remove("active");
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await fetchIncomeData(user.uid);
+            } else {
+                const activeUid = localStorage.getItem("activeUserUid");
+                const activePhone = localStorage.getItem("activeUserPhone");
+                if (activeUid) {
+                    await fetchIncomeData(activeUid);
+                } else if (activePhone) {
+                    await fetchIncomeData(activePhone);
+                } else {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
+        async function fetchIncomeData(identifier) {
+            try {
+                const docRef = doc(db, "Users", identifier);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    userData = docSnap.data();
+                    renderIncomePage();
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function renderIncomePage() {
+            const activePlans = userData.activePlans || {};
+            const planPurchaseDates = userData.planPurchaseDates || {};
+            const totalClaimedPerPlan = userData.totalClaimedPerPlan || {};
+            const lastClaimDatesPerPlan = userData.lastClaimDatesPerPlan || {};
+
+            const plansListContent = document.getElementById("plansListContent");
+            const activePlansContainer = document.getElementById("activePlansContainer");
+            const noDataBox = document.getElementById("noDataBox");
+
+            let hasPlans = false;
+            let htmlContent = "";
+
+            const todayObj = new Date();
+            const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
+
+            for (let planName in activePlans) {
+                let count = activePlans[planName] || 0;
+                if (count > 0) {
+                    hasPlans = true;
+                    let dailyRate = (planDailyIncome[planName] || 0) * count;
+
+                    let purchaseDateStr = planPurchaseDates[planName] || new Date().toISOString();
+                    let pDate = new Date(purchaseDateStr);
+                    let now = new Date();
+                    
+                    let diffTime = now - pDate;
+                    let daysActive = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                    if (daysActive < 1) daysActive = 1;
+                    if (daysActive > 100) daysActive = 100;
+                    
+                    let daysRemaining = 100 - daysActive;
+                    if (daysRemaining < 0) daysRemaining = 0;
+
+                    let totalClaimed = totalClaimedPerPlan[planName] || 0;
+                    let lastClaimForThisPlan = lastClaimDatesPerPlan[planName] || "";
+                    let isAlreadyClaimed = (lastClaimForThisPlan === todayStr);
+
+                    let btnHtml = isAlreadyClaimed 
+                        ? `<button class="plan-claim-btn claimed" disabled>আজকের ইনকাম নেওয়া হয়েছে</button>`
+                        : `<button class="plan-claim-btn" onclick="claimPlanIncome('${planName}', ${dailyRate})">গ্রহণ করুন (৳${dailyRate.toLocaleString()})</button>`;
+
+                    htmlContent += `
+                        <div class="active-plan-card">
+                            <div class="plan-card-top">
+                                <h4>${planName}</h4>
+                                <div class="count-badge">Active (x${count})</div>
+                            </div>
+                            <div class="plan-card-details">
+                                <div class="plan-detail-box">
+                                    <span>Daily Income</span>
+                                    <p class="highlight">৳${dailyRate.toLocaleString()}</p>
+                                </div>
+                                <div class="plan-detail-box">
+                                    <span>Days Running</span>
+                                    <p>${daysActive} Days</p>
+                                </div>
+                                <div class="plan-detail-box">
+                                    <span>Days Left</span>
+                                    <p>${daysRemaining} Days</p>
+                                </div>
+                                <div class="plan-detail-box" style="grid-column: span 3; margin-top: 4px;">
+                                    <span>Total Claimed</span>
+                                    <p class="highlight">৳${totalClaimed.toLocaleString()}</p>
+                                </div>
+                            </div>
+                            ${btnHtml}
+                        </div>
+                    `;
+                }
+            }
+
+            if (hasPlans) {
+                if (plansListContent) plansListContent.innerHTML = htmlContent;
+                if (activePlansContainer) activePlansContainer.style.display = "block";
+                if (noDataBox) noDataBox.style.display = "none";
+            } else {
+                if (activePlansContainer) activePlansContainer.style.display = "none";
+                if (noDataBox) noDataBox.style.display = "flex";
+            }
+        }
+
+        window.claimPlanIncome = async function(planName, amount) {
+            // Double tap & concurrent click prevention lock
+            if (isClaiming) return;
+            isClaiming = true;
+
+            const identifier = currentUser ? currentUser.uid : (localStorage.getItem("activeUserUid") || localStorage.getItem("activeUserPhone"));
+            if (!identifier) {
+                showAlert("ত্রুটি", "লগইন তথ্য পাওয়া যায়নি!", "error");
+                isClaiming = false;
+                return;
+            }
+
+            const todayObj = new Date();
+            const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, '0')}-${String(todayObj.getDate()).padStart(2, '0')}`;
+            
+            let lastClaimDatesPerPlan = userData.lastClaimDatesPerPlan || {};
+            if (lastClaimDatesPerPlan[planName] === todayStr) {
+                showAlert("সতর্কতা", `এই ${planName}-এর দৈনিক আয় ইতিমধ্যে গ্রহণ করা হয়েছে!`, "error");
+                isClaiming = false;
+                return;
+            }
+
+            try {
+                const userRef = doc(db, "Users", identifier);
+                
+                let totalClaimedPerPlan = userData.totalClaimedPerPlan || {};
+                totalClaimedPerPlan[planName] = (totalClaimedPerPlan[planName] || 0) + amount;
+                lastClaimDatesPerPlan[planName] = todayStr;
+
+                await updateDoc(userRef, {
+                    balance: increment(amount),
+                    userBalance: increment(amount),
+                    totalClaimedPerPlan: totalClaimedPerPlan,
+                    lastClaimDatesPerPlan: lastClaimDatesPerPlan
+                });
+
+                // Update local userData
+                userData.balance = (userData.balance || 0) + amount;
+                userData.userBalance = (userData.userBalance || 0) + amount;
+                userData.totalClaimedPerPlan = totalClaimedPerPlan;
+                userData.lastClaimDatesPerPlan = lastClaimDatesPerPlan;
+
+                showAlert("অভিনন্দন!", `${planName}-এর ৳${amount.toLocaleString()} সফলভাবে যোগ হয়েছে!`, "success");
+                renderIncomePage();
+
+            } catch (error) {
+                console.error("Error claiming plan income:", error);
+                showAlert("ত্রুটি", "কিছু সমস্যা হয়েছে, আবার চেষ্টা করুন।", "error");
+            } finally {
+                isClaiming = false;
+            }
+        };
+    </script>
+</body>
+</html>

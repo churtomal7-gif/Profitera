@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Dashboard</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        body {
+            background: #020905;
+            color: #ffffff;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Top Header */
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 18px;
+            background: rgba(4, 28, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-logo-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(0, 255, 135, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
+        }
+
+        .header-logo-box h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffffff 0%, #00ff87 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Auto Banner Slider */
+        .banner-container {
+            padding: 16px 16px 8px 16px;
+            position: relative;
+        }
+
+        .slider-box {
+            width: 100%;
+            height: 150px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(0, 255, 135, 0.25);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .slide-item {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        .slide-item.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .slide-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Platform Live Timer Box */
+        .live-counter-box {
+            margin: 8px 16px 16px 16px;
+            background: rgba(4, 28, 16, 0.8);
+            border: 1px solid rgba(0, 255, 135, 0.25);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .counter-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .radar-icon {
+            width: 38px;
+            height: 38px;
+            background: rgba(0, 255, 135, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00ff87;
+            font-size: 18px;
+            border: 1px solid rgba(0, 255, 135, 0.2);
+        }
+
+        .counter-info-title {
+            font-size: 11px;
+            color: #799988;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dot-green {
+            width: 7px;
+            height: 7px;
+            background: #00ff87;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00ff87;
+        }
+
+        .timer-digits {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 2px;
+            letter-spacing: 0.5px;
+        }
+
+        .counter-right {
+            text-align: right;
+        }
+
+        .launched-label {
+            font-size: 10px;
+            color: #799988;
+            font-weight: 600;
+        }
+
+        .launched-date {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .badge-live {
+            background: rgba(255, 77, 77, 0.15);
+            border: 1px solid rgba(255, 77, 77, 0.4);
+            color: #ff4d4d;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+
+        /* Investment Plans Section */
+        .plans-section {
+            padding: 0 16px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #799988;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: #00ff87;
+        }
+
+        .plan-card {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .plan-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 135, 0.1);
+        }
+
+        .plan-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .plan-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            background: rgba(0, 255, 135, 0.05);
+            padding: 4px;
+        }
+
+        .plan-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-limit {
+            font-size: 10px;
+            color: #60efff;
+            background: rgba(96, 239, 255, 0.1);
+            border: 1px solid rgba(96, 239, 255, 0.25);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .plan-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            margin-bottom: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 10px 6px;
+            border-radius: 10px;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-item span {
+            display: block;
+            font-size: 8.5px;
+            color: #799988;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .detail-item p {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .detail-item p.highlight {
+            color: #00ff87;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            border: none;
+            border-radius: 10px;
+            color: #01140a;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+        }
+
+        /* Dark Theme Welcome Popup Styling */
+        .welcome-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .welcome-popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .welcome-card {
+            width: 100%;
+            max-width: 350px;
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.15);
+            color: #ffffff;
+            position: relative;
+        }
+
+        .popup-top-banner {
+            background: linear-gradient(135deg, rgba(0, 255, 135, 0.2) 0%, rgba(0, 179, 89, 0.4) 100%);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.2);
+            padding: 18px 15px 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .popup-close-btn {
+            position: absolute;
+            top: 10px; right: 12px;
+            width: 24px; height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            border: none;
+        }
+
+        .popup-logo-circle {
+            width: 65px;
+            height: 65px;
+            background: #041c10;
+            border-radius: 50%;
+            margin: 0 auto -45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(0, 255, 135, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
+        .popup-logo-circle img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .popup-body {
+            padding: 35px 20px 20px 20px;
+            background: rgba(4, 28, 16, 0.65);
+        }
+
+        .popup-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+
+        .popup-sub-text {
+            font-size: 12px;
+            color: #00ff87;
+            text-align: center;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .popup-info-list {
+            font-size: 12px;
+            color: #c2d6cc;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .popup-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .commission-box {
+            margin-top: 4px;
+            padding-left: 20px;
+            font-size: 11.5px;
+            color: #00ff87;
+        }
+
+        .popup-footer-text {
+            text-align: center;
+            font-size: 11.5px;
+            color: #799988;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .skip-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            margin-top: 8px;
+            color: #799988;
+            font-size: 12px;
+            font-weight: 700;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Buy Modal Overlay Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { 
+            opacity: 1; 
+            visibility: visible; 
+        }
+
+        .modal-card {
+            width: 100%; max-width: 360px;
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 20px; padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.15);
+        }
+
+        .modal-top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15);
+        }
+
+        .balance-badge {
+            background: rgba(0, 255, 135, 0.1);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            padding: 4px 10px; border-radius: 20px;
+            font-size: 11px; font-weight: 700; color: #00ff87;
+        }
+
+        .close-btn { background: transparent; border: none; color: #799988; font-size: 18px; cursor: pointer; }
+        .modal-body { text-align: center; margin-bottom: 20px; }
+        .modal-icon { width: 50px; height: 50px; background: rgba(0, 255, 135, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: #00ff87; font-size: 20px; }
+        .modal-title { font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 6px; }
+        .modal-desc { font-size: 12px; color: #a0aec0; line-height: 1.5; }
+        .error-msg { color: #ff4d4d; font-size: 12px; font-weight: 600; margin-top: 8px; }
+        .modal-actions { display: flex; gap: 10px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; }
+        .btn-cancel { background: rgba(255, 255, 255, 0.05); color: #a0aec0; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-confirm { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; }
+        .btn-deposit { background: linear-gradient(135deg, #60efff 0%, #0088ff 100%); color: #01140a; }
+
+        /* Custom Dark Alert Popup Styles */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .custom-alert-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-alert-card {
+            width: 100%; max-width: 320px;
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 20px; padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
+        }
+
+        .custom-alert-icon {
+            width: 50px; height: 50px;
+            background: rgba(0, 255, 135, 0.1);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; color: #00ff87; font-size: 20px;
+        }
+
+        .custom-alert-title {
+            font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;
+        }
+
+        .custom-alert-message {
+            font-size: 12.5px; color: #c2d6cc; line-height: 1.5; margin-bottom: 20px;
+        }
+
+        .custom-alert-btn {
+            width: 100%; padding: 11px;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            border: none; border-radius: 12px;
+            color: #01140a; font-size: 12px; font-weight: 800;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+        }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
+            background: rgba(3, 20, 11, 0.95); backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(0, 255, 135, 0.2);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding: 0 10px;
+        }
+
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #618270; text-decoration: none; font-size: 10px; font-weight: 600; width: 20%; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 3px; }
+        .nav-item.active { color: #00ff87; }
+        .nav-item.home-btn { position: relative; top: -12px; }
+        .nav-item.home-btn .icon-box { width: 52px; height: 52px; background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(0, 255, 135, 0.5); border: 4px solid #020905; }
+        .nav-item.home-btn svg { width: 26px; height: 26px; fill: #01140a; margin-bottom: 0; }
+        .nav-item.home-btn span { color: #00ff87; font-weight: 800; margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-logo-box">
+            <img src="profitera.png" alt="Logo" class="header-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135706.png'">
+            <h1>ProfitEra</h1>
+        </div>
+    </div>
+
+    <!-- Auto-Changing Banner Container -->
+    <div class="banner-container">
+        <div class="slider-box" id="bannerSlider">
+            <div class="slide-item active">
+                <img src="banner1.jpg" alt="Banner 1" onerror="this.src='https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=800&q=80'">
+            </div>
+            <div class="slide-item">
+                <img src="banner2.jpg" alt="Banner 2" onerror="this.src='https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=800&q=80'">
+            </div>
+            <div class="slide-item">
+                <img src="banner3.jpg" alt="Banner 3" onerror="this.src='https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=800&q=80'">
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Live Countdown Timer -->
+    <div class="live-counter-box">
+        <div class="counter-left">
+            <div class="radar-icon">
+                <i class="fa-solid fa-tower-broadcast"></i>
+            </div>
+            <div>
+                <div class="counter-info-title">
+                    <span class="dot-green"></span> Platform Live Since
+                </div>
+                <div class="timer-digits" id="liveTimerDisplay">000 : 00 : 00 : 00</div>
+            </div>
+        </div>
+        <div class="counter-right">
+            <div class="launched-label">Launched On</div>
+            <div class="launched-date">27 Sep 2026</div>
+            <div class="badge-live"><i class="fa-solid fa-circle" style="font-size: 6px;"></i> LIVE</div>
+        </div>
+    </div>
+
+    <!-- Investment Plans Section -->
+    <div class="plans-section">
+        <div class="section-title">
+            <i class="fa-solid fa-chart-line"></i> Available Investment Plans
+        </div>
+
+        <!-- PLAN 1 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" class="plan-img" alt="Plan 1">
+                    <div class="plan-name">Plan 1</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-1">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳75</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳7,500</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳650</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 1', 650)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 2 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2489/2489756.png" class="plan-img" alt="Plan 2">
+                    <div class="plan-name">Plan 2</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-2">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳190</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳19,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳1,200</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 2', 1200)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 3 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2169/2169862.png" class="plan-img" alt="Plan 3">
+                    <div class="plan-name">Plan 3</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-3">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳540</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳54,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳2,700</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 3', 2700)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 4 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1067/1067566.png" class="plan-img" alt="Plan 4">
+                    <div class="plan-name">Plan 4</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-4">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳1,140</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳114,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳5,000</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 4', 5000)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 5 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/189/189093.png" class="plan-img" alt="Plan 5">
+                    <div class="plan-name">Plan 5</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-5">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳1,950</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳195,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳10,000</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 5', 10000)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 6 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="plan-img" alt="Plan 6">
+                    <div class="plan-name">Plan 6</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-6">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳4,640</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳464,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳20,000</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 6', 20000)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 7 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2953/2953372.png" class="plan-img" alt="Plan 7">
+                    <div class="plan-name">Plan 7</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-7">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳10,300</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳1,030,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳40,000</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 7', 40000)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+
+        <!-- PLAN 8 -->
+        <div class="plan-card">
+            <div class="plan-header">
+                <div class="plan-title-group">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2535/2535554.png" class="plan-img" alt="Plan 8">
+                    <div class="plan-name">Plan 8</div>
+                </div>
+                <div class="plan-limit" id="limit-Plan-8">LIMIT 0/2</div>
+            </div>
+            <div class="plan-details">
+                <div class="detail-item">
+                    <span>Daily</span>
+                    <p class="highlight">৳20,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Total Income</span>
+                    <p class="highlight">৳2,000,000</p>
+                </div>
+                <div class="detail-item">
+                    <span>Duration</span>
+                    <p>100 Days</p>
+                </div>
+                <div class="detail-item">
+                    <span>Price</span>
+                    <p>৳80,000</p>
+                </div>
+            </div>
+            <button class="btn-buy" onclick="openBuyModal('Plan 8', 80000)">
+                <i class="fa-solid fa-cart-shopping"></i> Buy Plan
+            </button>
+        </div>
+    </div>
+
+    <!-- Welcome Popup (Notice Board) -->
+    <div class="welcome-popup-overlay" id="welcomePopup">
+        <div class="welcome-card">
+            <div class="popup-top-banner">
+                <button class="popup-close-btn" onclick="closeWelcomePopup()"><i class="fa-solid fa-xmark"></i></button>
+                <div class="popup-logo-circle">
+                    <img src="profitera.png" alt="Logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135706.png'">
+                </div>
+            </div>
+            
+            <div class="popup-body">
+                <div class="popup-title">🎉 ProfitEra-তে আপনাকে স্বাগতম 🎉</div>
+                <div class="popup-sub-text">🇧🇩 বাংলাদেশে ProfitEra-এর আনুষ্ঠানিক যাত্রা শুরু</div>
+                
+                <div class="popup-info-list">
+                    <div class="popup-info-item">
+                        <i class="fa-regular fa-calendar-days" style="color: #cc001b;"></i>
+                        <div><strong>তারিখ:</strong> <span id="current-date"></span></div>
+                    </div>
+                    <div class="popup-info-item">
+                        <i class="fa-solid fa-circle-info" style="color: #00b359;"></i>
+                        <div>ProfitEra-এর নতুন সদস্যদের জন্য রয়েছে বিভিন্ন সুবিধা ও রেফার কমিশনের সুযোগ।</div>
+                    </div>
+                    <div class="popup-info-item">
+                        <i class="fa-solid fa-gift" style="color: #f39c12;"></i>
+                        <div><strong>অ্যাকাউন্ট বোনাস:</strong> ১০০ টাকা</div>
+                    </div>
+                    <div class="popup-info-item" style="margin-bottom: 2px;">
+                        <i class="fa-solid fa-sack-dollar" style="color: #27ae60;"></i>
+                        <div><strong>রেফার কমিশন:</strong></div>
+                    </div>
+                    <div class="commission-box">
+                        <div>🔹 লেভেল ১: ১০%</div>
+                        <div>🔹 লেভেল ২: ২%</div>
+                        <div>🔹 লেভেল ৩: ১%</div>
+                    </div>
+                </div>
+
+                <div class="popup-footer-text">✨ ProfitEra — নতুন সম্ভাবনার পথে আপনার স্বাগতম।</div>
+                <button class="skip-btn" onclick="closeWelcomePopup()">Skip for now &rarr;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buy Plan Confirmation Modal -->
+    <div class="modal-overlay" id="buyModal">
+        <div class="modal-card">
+            <div class="modal-top-bar">
+                <div class="balance-badge">
+                    <i class="fa-solid fa-wallet"></i> Balance: ৳<span id="modalBalance">0</span>
+                </div>
+                <button class="close-btn" onclick="closeBuyModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-icon"><i class="fa-solid fa-gem"></i></div>
+                <div class="modal-title" id="modalPlanTitle">Confirm Purchase</div>
+                <div class="modal-desc" id="modalPlanDesc">Are you sure you want to subscribe to this plan?</div>
+                <div class="error-msg" id="modalError" style="display: none;"></div>
+            </div>
+
+            <div class="modal-actions" id="modalActions">
+                <button class="btn-modal btn-cancel" onclick="closeBuyModal()">Cancel</button>
+                <button class="btn-modal btn-confirm" id="confirmBuyBtn" onclick="confirmPurchase()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Popup -->
+    <div class="custom-alert-overlay" id="customAlertBox">
+        <div class="custom-alert-card">
+            <div class="custom-alert-icon" id="customAlertIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="custom-alert-title" id="customAlertTitle">Success</div>
+            <div class="custom-alert-message" id="customAlertMsg">Message goes here...</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="income.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Income</span>
+        </a>
+
+        <a href="refer.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>Refer</span>
+        </a>
+
+        <a href="dashboard.html" class="nav-item home-btn active">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </div>
+            <span>Home</span>
+        </a>
+
+        <a href="task.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span>Task</span>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Account</span>
+        </a>
+    </div>
+
+    <!-- Firebase SDKs & Dashboard Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let userData = { balance: 0, userBalance: 0, activePlans: {} };
+        let selectedPlanName = "";
+        let selectedPlanPrice = 0;
+
+        window.showAlert = function(title, message, type = "success") {
+            const alertBox = document.getElementById("customAlertBox");
+            const titleElem = document.getElementById("customAlertTitle");
+            const msgElem = document.getElementById("customAlertMsg");
+            const iconElem = document.getElementById("customAlertIcon");
+
+            if (titleElem) titleElem.innerText = title;
+            if (msgElem) msgElem.innerText = message;
+            
+            if (iconElem) {
+                if (type === "error") {
+                    iconElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                    iconElem.style.color = "#ff4d4d";
+                    iconElem.style.borderColor = "rgba(255, 77, 77, 0.4)";
+                    iconElem.style.background = "rgba(255, 77, 77, 0.1)";
+                } else {
+                    iconElem.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    iconElem.style.color = "#00ff87";
+                    iconElem.style.borderColor = "rgba(0, 255, 135, 0.3)";
+                    iconElem.style.background = "rgba(0, 255, 135, 0.1)";
+                }
+            }
+
+            if (alertBox) alertBox.classList.add("active");
+        };
+
+        window.closeCustomAlert = function() {
+            const alertBox = document.getElementById("customAlertBox");
+            if (alertBox) alertBox.classList.remove("active");
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                await fetchDashboardData(user.uid);
+            } else {
+                const activePhone = localStorage.getItem("activeUserPhone");
+                const activeUid = localStorage.getItem("activeUserUid");
+                
+                if (activeUid) {
+                    await fetchDashboardData(activeUid);
+                } else if (activePhone) {
+                    await fetchDashboardData(activePhone);
+                } else {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
+        async function fetchDashboardData(identifier) {
+            try {
+                const userDocRef = doc(db, "Users", identifier);
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    userData = docSnap.data();
+                    if (userData.balance === undefined && userData.userBalance !== undefined) {
+                        userData.balance = userData.userBalance;
+                    } else if (userData.userBalance === undefined && userData.balance !== undefined) {
+                        userData.userBalance = userData.balance;
+                    }
+                    updateDashboardUI();
+                } else {
+                    userData = { 
+                        uid: identifier,
+                        balance: 100,
+                        userBalance: 100, 
+                        activePlans: {},
+                        createdAt: new Date().toISOString()
+                    };
+                    await setDoc(userDocRef, userData);
+                    updateDashboardUI();
+                }
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+            }
+        }
+
+        function updateDashboardUI() {
+            for (let i = 1; i <= 8; i++) {
+                let elem = document.getElementById(`limit-Plan-${i}`);
+                if (elem) elem.innerText = `LIMIT 0/2`;
+            }
+
+            if (userData.activePlans) {
+                for (let planKey in userData.activePlans) {
+                    let count = userData.activePlans[planKey] || 0;
+                    let elem = document.getElementById(`limit-${planKey.replace(" ", "-")}`);
+                    if (elem) elem.innerText = `LIMIT ${count}/2`;
+                }
+            }
+        }
+
+        window.openBuyModal = async function(planName, price) {
+            selectedPlanName = planName;
+            selectedPlanPrice = price;
+
+            const identifier = currentUser ? currentUser.uid : (localStorage.getItem("activeUserUid") || localStorage.getItem("activeUserPhone"));
+            if (identifier) {
+                try {
+                    const docSnap = await getDoc(doc(db, "Users", identifier));
+                    if (docSnap.exists()) {
+                        userData = docSnap.data();
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            let planCount = userData.activePlans && userData.activePlans[planName] ? userData.activePlans[planName] : 0;
+            const errorMsg = document.getElementById("modalError");
+            const modalActions = document.getElementById("modalActions");
+            
+            const currentBal = Number(userData.balance !== undefined ? userData.balance : (userData.userBalance || 0));
+
+            const balanceElem = document.getElementById("modalBalance");
+            if (balanceElem) balanceElem.innerText = currentBal.toLocaleString();
+
+            const planTitleElem = document.getElementById("modalPlanTitle");
+            if (planTitleElem) planTitleElem.innerText = `Subscribe to ${planName}`;
+
+            const planDescElem = document.getElementById("modalPlanDesc");
+            if (planDescElem) planDescElem.innerText = `Do you want to purchase ${planName} for ৳${price.toLocaleString()}?`;
+
+            if (planCount >= 2) {
+                if (errorMsg) {
+                    errorMsg.innerText = "Maximum limit reached for this plan! (Max 2)";
+                    errorMsg.style.display = "block";
+                }
+                if (modalActions) modalActions.innerHTML = `<button class="btn-modal btn-cancel" onclick="closeBuyModal()">Close</button>`;
+            } else if (currentBal < price) {
+                if (errorMsg) {
+                    errorMsg.innerText = "Insufficient balance! Please make a deposit.";
+                    errorMsg.style.display = "block";
+                }
+                if (modalActions) modalActions.innerHTML = `
+                    <button class="btn-modal btn-cancel" onclick="closeBuyModal()">Cancel</button>
+                    <button class="btn-modal btn-deposit" onclick="goToDeposit()">Deposit Now</button>
+                `;
+            } else {
+                if (errorMsg) errorMsg.style.display = "none";
+                if (modalActions) modalActions.innerHTML = `
+                    <button class="btn-modal btn-cancel" onclick="closeBuyModal()">Cancel</button>
+                    <button class="btn-modal btn-confirm" id="confirmBuyBtn" onclick="confirmPurchase()">Confirm</button>
+                `;
+            }
+
+            const buyModal = document.getElementById("buyModal");
+            if (buyModal) buyModal.classList.add("active");
+        };
+
+        window.closeBuyModal = function() {
+            const buyModal = document.getElementById("buyModal");
+            if (buyModal) buyModal.classList.remove("active");
+        };
+
+        window.goToDeposit = function() {
+            localStorage.setItem("selectedPlan", selectedPlanName);
+            localStorage.setItem("selectedPrice", selectedPlanPrice);
+            window.location.href = "payment.html";
+        };
+
+        window.confirmPurchase = async function() {
+            const identifier = currentUser ? currentUser.uid : (localStorage.getItem("activeUserUid") || localStorage.getItem("activeUserPhone"));
+            if (!identifier) return;
+
+            const confirmBtn = document.getElementById("confirmBuyBtn");
+            if (confirmBtn) confirmBtn.disabled = true;
+
+            let currentCount = userData.activePlans && userData.activePlans[selectedPlanName] ? userData.activePlans[selectedPlanName] : 0;
+            let currentBal = Number(userData.balance !== undefined ? userData.balance : (userData.userBalance || 0));
+
+            if (currentCount >= 2) {
+                closeBuyModal();
+                showAlert("Sotorkota", "Apni ei planti maximum 2 bar kinte paren!", "error");
+                if (confirmBtn) confirmBtn.disabled = false;
+                return;
+            }
+
+            if (currentBal >= selectedPlanPrice) {
+                try {
+                    const userRef = doc(db, "Users", identifier);
+                    const purchaseTimestamp = new Date().toISOString();
+                    
+                    await updateDoc(userRef, {
+                        balance: increment(-selectedPlanPrice),
+                        userBalance: increment(-selectedPlanPrice),
+                        [`activePlans.${selectedPlanName}`]: increment(1),
+                        [`planPurchaseDates.${selectedPlanName}`]: purchaseTimestamp
+                    });
+
+                    userData.balance = currentBal - selectedPlanPrice;
+                    userData.userBalance = currentBal - selectedPlanPrice;
+                    if(!userData.activePlans) userData.activePlans = {};
+                    userData.activePlans[selectedPlanName] = currentCount + 1;
+
+                    updateDashboardUI();
+                    closeBuyModal();
+                    showAlert("Success!", `Successfully purchased ${selectedPlanName}!`, "success");
+                } catch (error) {
+                    console.error("Error purchasing plan: ", error);
+                    closeBuyModal();
+                    showAlert("Error", "Something went wrong. Please try again.", "error");
+                    if (confirmBtn) confirmBtn.disabled = false;
+                }
+            } else {
+                if (confirmBtn) confirmBtn.disabled = false;
+            }
+        };
+
+        window.closeWelcomePopup = function() {
+            const welcomePopup = document.getElementById("welcomePopup");
+            if (welcomePopup) welcomePopup.classList.remove("active");
+            sessionStorage.setItem("popupShown", "true");
+        };
+
+        window.addEventListener("load", () => {
+            if (!sessionStorage.getItem("popupShown")) {
+                setTimeout(() => {
+                    const welcomePopup = document.getElementById("welcomePopup");
+                    if (welcomePopup) welcomePopup.classList.add("active");
+                }, 500);
+            }
+        });
+    </script>
+
+    <!-- General Scripts (Slider & Timer) -->
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll(".slide-item");
+        setInterval(() => {
+            if(slides.length > 0) {
+                slides[currentSlide].classList.remove("active");
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add("active");
+            }
+        }, 3500);
+
+        const launchDate = new Date("September 27, 2026 06:37:00").getTime();
+
+        function updateLiveCounter() {
+            const now = new Date().getTime();
+            let diff = now - launchDate;
+
+            if (diff < 0) diff = 0; 
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const format = (num, len = 2) => String(num).padStart(len, '0');
+            const timerDisplay = document.getElementById("liveTimerDisplay");
+            if (timerDisplay) {
+                timerDisplay.innerText = `${format(days, 3)} : ${format(hours)} : ${format(minutes)} : ${format(seconds)}`;
+            }
+        }
+        setInterval(updateLiveCounter, 1000);
+        updateLiveCounter();
+
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const today = new Date();
+        const dateElem = document.getElementById('current-date');
+        if(dateElem) {
+            dateElem.innerText = today.toLocaleDateString('bn-BD', options);
+        }
+    </script>
+</body>
+</html>

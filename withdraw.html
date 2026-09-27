@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Withdraw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; outline: none !important; }
+        body { background: #020905; color: #ffffff; padding-bottom: 50px; min-height: 100vh; }
+        
+        .top-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: rgba(4, 28, 16, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15); position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn { color: #00ff87; font-size: 16px; text-decoration: none; width: 32px; height: 32px; background: rgba(0, 255, 135, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 135, 0.2); }
+        .header-title { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 700; color: #ffffff; }
+
+        .withdraw-container { padding: 16px; max-width: 500px; margin: 0 auto; }
+        
+        /* Balance Display Box */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(0, 255, 135, 0.15) 0%, rgba(4, 28, 16, 0.8) 100%);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+        }
+        .balance-info span { font-size: 12px; color: #799988; text-transform: uppercase; font-weight: 700; display: block; }
+        .balance-info h2 { font-family: 'Orbitron', sans-serif; font-size: 22px; color: #00ff87; margin-top: 4px; }
+        .balance-icon { width: 45px; height: 45px; background: rgba(0, 255, 135, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #00ff87; font-size: 20px; }
+
+        .notice-card { 
+            background: rgba(0, 255, 135, 0.05); 
+            border: 1px solid rgba(0, 255, 135, 0.2); 
+            border-radius: 14px; 
+            padding: 14px 16px; 
+            margin-bottom: 16px; 
+            font-size: 13px; 
+            color: #d1ebd9; 
+            line-height: 1.8; 
+        }
+        .notice-card strong { color: #00ff87; display: block; margin-bottom: 4px; font-size: 14px; font-family: 'Orbitron', sans-serif; }
+        .notice-card p { margin-bottom: 6px; }
+
+        .withdraw-card { background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.18); border-radius: 16px; padding: 18px; margin-bottom: 16px; backdrop-filter: blur(10px); }
+        .section-label { font-size: 12px; font-weight: 700; color: #799988; text-transform: uppercase; margin-bottom: 8px; display: block; }
+
+        .methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+        .method-box { 
+            background: rgba(0, 255, 135, 0.03); 
+            border: 1.5px solid rgba(0, 255, 135, 0.15); 
+            border-radius: 12px; 
+            padding: 12px; 
+            text-align: center; 
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .method-box.active { background: rgba(0, 255, 135, 0.12); border-color: #00ff87; box-shadow: 0 0 10px rgba(0, 255, 135, 0.2); }
+        .method-box img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; }
+        .method-name { font-size: 13px; font-weight: 700; color: #ffffff; }
+
+        .form-group { margin-bottom: 14px; }
+        input { width: 100%; background: rgba(0, 255, 135, 0.05); border: 1px solid rgba(0, 255, 135, 0.2); padding: 12px 14px; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; }
+        input:focus { border-color: #00ff87; }
+
+        .submit-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 14px; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 6px; }
+
+        .history-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00ff87; margin-bottom: 10px; }
+        .table-responsive { width: 100%; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid rgba(0,255,135,0.1); font-size: 12px; }
+        th { color: #00ff87; font-family: 'Orbitron', sans-serif; font-size: 10px; }
+        .status-pending { color: #ffa502; font-weight: 700; }
+        .status-success { color: #00ff87; font-weight: 700; }
+
+        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: none; align-items: center; justify-content: center; z-index: 11000; }
+        .custom-alert-box { background: linear-gradient(135deg, #042810 0%, #02140a 100%); border: 2px solid #00ff87; border-radius: 16px; width: 85%; max-width: 320px; padding: 22px; text-align: center; }
+        .custom-alert-msg { font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 20px; }
+        .custom-alert-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <a href="profile.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Withdraw Money</div>
+        <div style="width:32px"></div>
+    </div>
+
+    <div class="withdraw-container">
+        
+        <!-- Balance Show Box -->
+        <div class="balance-card">
+            <div class="balance-info">
+                <span>Available Balance</span>
+                <h2 id="userBalanceDisplay">৳0.00</h2>
+            </div>
+            <div class="balance-icon">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+        </div>
+
+        <div class="notice-card">
+            <strong><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশিকা:</strong>
+            <p>🔹 ১. আপনার পেমেন্ট মাধ্যম (বিকাশ অথবা নগদ) সিলেক্ট করুন।</p>
+            <p>🔹 ২. আপনার সঠিক পার্সোনাল অ্যাকাউন্ট নম্বরটি দিন।</p>
+            <p>🔹 ৩. উত্তোলনের পরিমাণ (Amount) বসিয়ে সাবমিট করুন।</p>
+            <p>🔹 ৪. সাধারণত ২৪ ঘণ্টার মধ্যে অ্যাডমিন পেমেন্ট সফল করে দিবে।</p>
+            <p>🔹 ৫. উইথড্র করার সময় ১০% চার্জ কাটা হবে।</p>
+            <p>🔹 ৬. ভুল নম্বর দিলে এবং ভুল নম্বরে টাকা গেলে কর্তৃপক্ষ দায়ী থাকবে না।</p>
+            <p>🔹 ৭. দৈনিক সর্বোচ্চ ২টি উইথড্র রিকোয়েস্ট করা যাবে।</p>
+        </div>
+
+        <div class="withdraw-card">
+            <span class="section-label">Select Method</span>
+            <div class="methods-grid">
+                <div class="method-box active" id="bkashMethod" onclick="selectMethod('bkash')">
+                    <img src="bkash.png" alt="bKash">
+                    <div class="method-name">bKash</div>
+                </div>
+                <div class="method-box" id="nogodMethod" onclick="selectMethod('nogod')">
+                    <img src="nogod.png" alt="Nogod">
+                    <div class="method-name">Nogod</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <span class="section-label">Personal Account Number</span>
+                <input type="text" id="accountNumberInput" placeholder="Enter your personal number">
+            </div>
+
+            <div class="form-group">
+                <span class="section-label">Withdraw Amount (BDT)</span>
+                <input type="number" id="withdrawAmount" placeholder="Enter amount">
+            </div>
+
+            <button class="submit-btn" onclick="submitWithdraw()">Submit Withdraw</button>
+        </div>
+
+        <!-- Withdraw History Section -->
+        <div class="withdraw-card">
+            <div class="history-title">My Withdraw History</div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Requested</th>
+                            <th>Get Amount (After 10%)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userWithdrawHistory">
+                        <tr><td colspan="4" style="text-align:center; color:#799988;">Loading history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="custom-alert-overlay" id="customAlert">
+        <div class="custom-alert-box">
+            <div class="custom-alert-msg" id="customAlertMsg">Message</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let selectedPaymentMethod = "bkash";
+        let currentUserId = "";
+        let currentUserEmail = "";
+        let currentBalance = 0;
+
+        window.showAlert = function(msg) {
+            document.getElementById('customAlertMsg').innerText = msg;
+            document.getElementById('customAlert').style.display = 'flex';
+        }
+        window.closeCustomAlert = function() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        window.selectMethod = function(method) {
+            selectedPaymentMethod = method;
+            document.getElementById('bkashMethod').classList.remove('active');
+            document.getElementById('nogodMethod').classList.remove('active');
+            
+            if(method === 'bkash') {
+                document.getElementById('bkashMethod').classList.add('active');
+            } else {
+                document.getElementById('nogodMethod').classList.add('active');
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                currentUserEmail = user.email || user.phoneNumber || user.uid;
+            } else {
+                currentUserId = localStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserUid") || localStorage.getItem("userEmail");
+                currentUserEmail = currentUserId;
+                if (!currentUserId) {
+                    window.location.href = "login.html";
+                    return;
+                }
+            }
+            fetchUserData(currentUserId);
+            loadUserHistory(currentUserId);
+        });
+
+        async function fetchUserData(userId) {
+            try {
+                const userDocRef = doc(db, "Users", userId);
+                const userSnap = await getDoc(userDocRef);
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    currentBalance = Number(userData.balance || userData.wallet || 0);
+                    document.getElementById('userBalanceDisplay').innerText = `৳${currentBalance.toFixed(2)}`;
+                }
+            } catch (e) {
+                console.error("Error fetching user data:", e);
+            }
+        }
+
+        window.submitWithdraw = async function() {
+            const accountNumber = document.getElementById('accountNumberInput').value.trim();
+            const amountInput = document.getElementById('withdrawAmount').value.trim();
+            const requestedAmount = Number(amountInput);
+
+            if (!currentUserId) {
+                showAlert("Session expired. Please log in again.");
+                return;
+            }
+            if (!accountNumber) {
+                showAlert("সঠিক অ্যাকাউন্ট নম্বর দিন।");
+                return;
+            }
+            if (!amountInput || isNaN(requestedAmount) || requestedAmount <= 0) {
+                showAlert("সঠিক উত্তোলনের পরিমাণ দিন।");
+                return;
+            }
+
+            if (requestedAmount > currentBalance) {
+                showAlert("আপনার অ্যাকাউন্টে পর্যাপ্ত ব্যালেন্স নেই!");
+                return;
+            }
+
+            try {
+                // দৈনিক উইথড্র লিমিট চেক (সর্বোচ্চ ২টি)
+                const todayStr = new Date().toISOString().split('T')[0];
+                const withdrawsQuery = query(
+                    collection(db, "Withdraws"), 
+                    where("userId", "==", currentUserId)
+                );
+                const withdrawSnap = await getDocs(withdrawsQuery);
+                
+                let todayCount = 0;
+                withdrawSnap.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    if (data.timestamp) {
+                        const d = data.timestamp.toDate ? data.timestamp.toDate() : new Date();
+                        const dStr = d.toISOString().split('T')[0];
+                        if (dStr === todayStr) {
+                            todayCount++;
+                        }
+                    }
+                });
+
+                if (todayCount >= 2) {
+                    showAlert("আপনি আজ দৈনিক সর্বোচ্চ ২টি উইথড্র লিমিট পূরণ করেছেন। কাল আবার চেষ্টা করুন।");
+                    return;
+                }
+
+                // ১০% ফি কেটে অ্যাডমিন প্যানেলের জন্য মূল অ্যামাউন্ট নির্ধারণ করা
+                const fee = requestedAmount * 0.10;
+                const finalNetAmount = requestedAmount - fee;
+
+                // নতুন ব্যালেন্স (ইউজারের ব্যালেন্স থেকে সম্পূর্ণ রিকোয়েস্ট অ্যামাউন্ট কাটা হবে)
+                const newBalance = currentBalance - requestedAmount;
+
+                // অ্যাডমিন প্যানেলে সেন্ড করার জন্য ডাটা অবজেক্ট (এখানে amount ফিল্ডে ১০% বাদে বাকি টাকা অর্থাৎ finalNetAmount পাঠানো হয়েছে)
+                const withdrawData = {
+                    userId: currentUserId,
+                    email: currentUserEmail,
+                    requestedAmount: requestedAmount, // ইউজার মোট কত কেটেছিল
+                    amount: finalNetAmount,           // অ্যাডমিন প্যানেলে যে অ্যামাউন্ট শো করবে (১০% বাদ দিয়ে)
+                    netAmount: finalNetAmount,         
+                    method: selectedPaymentMethod.toUpperCase(),
+                    accountNumber: accountNumber,
+                    status: "Pending",
+                    timestamp: serverTimestamp()
+                };
+
+                await addDoc(collection(db, "Withdraws"), withdrawData);
+
+                // ইউজারের ব্যালেন্স আপডেট করা
+                const userDocRef = doc(db, "Users", currentUserId);
+                await updateDoc(userDocRef, {
+                    balance: newBalance
+                });
+
+                currentBalance = newBalance;
+                document.getElementById('userBalanceDisplay').innerText = `৳${currentBalance.toFixed(2)}`;
+
+                showAlert("Withdraw request submitted successfully!");
+                
+                document.getElementById('accountNumberInput').value = '';
+                document.getElementById('withdrawAmount').value = '';
+                loadUserHistory(currentUserId);
+            } catch (e) {
+                showAlert("Error: " + e.message);
+            }
+        }
+
+        async function loadUserHistory(userId) {
+            const tbody = document.getElementById('userWithdrawHistory');
+            try {
+                const q = query(collection(db, "Withdraws"), where("userId", "==", userId));
+                const querySnapshot = await getDocs(q);
+                
+                if(querySnapshot.empty) {
+                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#799988;">No history found</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = "";
+                querySnapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const isSuccess = data.status === "Success" || data.status === "Approved";
+                    const reqAmt = data.requestedAmount !== undefined ? data.requestedAmount : (data.amount / 0.90);
+                    const getAmount = data.netAmount !== undefined ? data.netAmount : data.amount;
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${data.method}</td>
+                        <td>৳${reqAmt}</td>
+                        <td>৳${getAmount}</td>
+                        <td><span class="${isSuccess ? 'status-success' : 'status-pending'}">${data.status}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Failed to load history</td></tr>`;
+            }
+        }
+    </script>
+</body>
+</html>

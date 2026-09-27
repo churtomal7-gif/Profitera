@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Refer & Earn</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        body {
+            background: #020905;
+            color: #ffffff;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Top Header */
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 18px;
+            background: rgba(4, 28, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        /* Container */
+        .refer-container {
+            padding: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #799988;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            margin-left: 4px;
+        }
+
+        /* Referral Link Box (Top) */
+        .refer-link-card {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .refer-link-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .link-copy-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 255, 135, 0.05);
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            border-radius: 12px;
+            padding: 8px 12px;
+            gap: 10px;
+        }
+
+        .link-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #00ff87;
+            font-size: 13px;
+            font-weight: 600;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            color: #01140a;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* My Team Revenue Section */
+        .revenue-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .revenue-card {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 14px;
+            padding: 14px;
+            backdrop-filter: blur(10px);
+        }
+
+        .revenue-card.full-width {
+            grid-column: span 2;
+        }
+
+        .revenue-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #799988;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .revenue-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .revenue-value.green {
+            color: #00ff87;
+        }
+
+        /* Commission Box Section */
+        .commission-box-container {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .commission-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 255, 135, 0.08);
+        }
+
+        .commission-item:last-child {
+            border-bottom: none;
+        }
+
+        .comm-level {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .comm-rate {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #00ff87;
+            background: rgba(0, 255, 135, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
+            background: rgba(3, 20, 11, 0.95); backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(0, 255, 135, 0.2);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding: 0 10px;
+        }
+
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #618270; text-decoration: none; font-size: 10px; font-weight: 600; width: 20%; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 3px; }
+        .nav-item.active { color: #00ff87; }
+        .nav-item.home-btn { position: relative; top: -12px; }
+        .nav-item.home-btn .icon-box { width: 52px; height: 52px; background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(0, 255, 135, 0.5); border: 4px solid #020905; }
+        .nav-item.home-btn svg { width: 26px; height: 26px; fill: #01140a; margin-bottom: 0; }
+        .nav-item.home-btn span { color: #00ff87; font-weight: 800; margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="header-title">Refer & Earn</div>
+    </div>
+
+    <!-- Refer Container -->
+    <div class="refer-container">
+        
+        <!-- Referral Link Section -->
+        <div class="section-title">Referral Link</div>
+        <div class="refer-link-card">
+            <div class="refer-link-label">Invite your friends & earn commission</div>
+            <div class="link-copy-wrapper">
+                <input type="text" id="referLinkInput" class="link-input" value="https://profitera.com/register?ref=XR78954" readonly>
+                <button class="copy-btn" onclick="copyReferLink()">Copy Link</button>
+            </div>
+        </div>
+
+        <!-- My Team Revenue Section -->
+        <div class="section-title">My Team Revenue</div>
+        <div class="revenue-grid">
+            <div class="revenue-card">
+                <div class="revenue-label">Total Accounts</div>
+                <div class="revenue-value">০</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-label">Today Accounts</div>
+                <div class="revenue-value">০</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-label">Level 1 Deposit</div>
+                <div class="revenue-value green">৳ ০.০০</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-label">Level 2 Deposit</div>
+                <div class="revenue-value green">৳ ০.০০</div>
+            </div>
+            <div class="revenue-card full-width">
+                <div class="revenue-label">Level 3 Deposit</div>
+                <div class="revenue-value green">৳ ০.০০</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-label">Today Total Deposit</div>
+                <div class="revenue-value green">৳ ০.০০</div>
+            </div>
+            <div class="revenue-card">
+                <div class="revenue-label">Today Total Withdraw</div>
+                <div class="revenue-value">৳ ০.০০</div>
+            </div>
+        </div>
+
+        <!-- Commission Box Section -->
+        <div class="section-title">Commission Box</div>
+        <div class="commission-box-container">
+            <div class="commission-item">
+                <span class="comm-level">LEVEL 1</span>
+                <span class="comm-rate">20%</span>
+            </div>
+            <div class="commission-item">
+                <span class="comm-level">LEVEL 2</span>
+                <span class="comm-rate">4%</span>
+            </div>
+            <div class="commission-item">
+                <span class="comm-level">LEVEL 3</span>
+                <span class="comm-rate">2%</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="income.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Income</span>
+        </a>
+
+        <a href="refer.html" class="nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>Refer</span>
+        </a>
+
+        <a href="dashboard.html" class="nav-item home-btn">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </div>
+            <span>Home</span>
+        </a>
+
+        <a href="task.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span>Task</span>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Account</span>
+        </a>
+    </div>
+
+    <script>
+        // Copy Refer Link Function
+        function copyReferLink() {
+            const linkInput = document.getElementById('referLinkInput');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // For mobile devices
+            
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+                alert('Referral link copied successfully!');
+            }).catch(err => {
+                alert('Failed to copy link!');
+            });
+        }
+    </script>
+</body>
+</html>
