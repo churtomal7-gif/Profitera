@@ -92,11 +92,11 @@
     <div class="deposit-container">
         
         <div class="notice-card">
-            <strong><i class="fa-solid fa-circle-info"></i> Guruttopurno Nirdeshika:</strong>
-            <p>• Nimnoro deposit amount ৳600. Er kom deposit grohonjogy noy.</p>
-            <p>• Prothome uporer jekono payment option select korun.</p>
-            <p>• Tarpor je number dewa ache sei nombore cashout korun.</p>
-            <p>• Erpor sei nombore yoto taka pathiyechen ebong transaction ID bosan.</p>
+            <strong><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশিকা:</strong>
+            <p>• সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০। এর কম ডিপোজিট গ্রহণযোগ্য নয়।</p>
+            <p>• প্রথমে উপরের যেকোনো পেমেন্ট অপশন সিলেক্ট করুন।</p>
+            <p>• তারপর যে নম্বর দেওয়া আছে সেই নম্বরে ক্যাশআউট করুন।</p>
+            <p>• এরপর সেই নম্বরে যত টাকা পাঠিয়েছেন এবং ট্রানজেকশন আইডি বসান।</p>
         </div>
 
         <div class="deposit-card">
@@ -165,7 +165,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -290,32 +290,6 @@
         onAuthStateChanged(auth, () => { initUserSession(); });
         initUserSession();
 
-        async function findUserDocByReferralCode(refCode) {
-            if (!refCode) return null;
-            try {
-                const q = query(collection(db, "Users"), where("userId", "==", refCode));
-                const snap = await getDocs(q);
-                if (!snap.empty) {
-                    return { ref: snap.docs[0].ref, data: snap.docs[0].data() };
-                }
-
-                const qPhone = query(collection(db, "Users"), where("phoneNumber", "==", refCode));
-                const snapPhone = await getDocs(qPhone);
-                if (!snapPhone.empty) {
-                    return { ref: snapPhone.docs[0].ref, data: snapPhone.docs[0].data() };
-                }
-
-                const directRef = doc(db, "Users", refCode);
-                const directSnap = await getDoc(directRef);
-                if (directSnap.exists()) {
-                    return { ref: directRef, data: directSnap.data() };
-                }
-            } catch (err) {
-                console.error("Error finding referral:", err);
-            }
-            return null;
-        }
-
         window.submitDeposit = async function() {
             const amountInput = document.getElementById('depositAmount').value.trim();
             const trxId = document.getElementById('trxIdInput').value.trim();
@@ -327,7 +301,7 @@
                 return;
             }
             if (!amountInput || isNaN(amount) || amount < 600) {
-                showAlert("Nimnoro deposit amount ৳600 hote hobe.");
+                showAlert("সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০ হতে হবে।");
                 return;
             }
             if (!trxId) {
@@ -349,8 +323,11 @@
                     return;
                 }
 
+                // শুধুমাত্র ডিপোজিট রিকোয়েস্ট 'Pending' স্ট্যাটাসে সেভ হবে। 
+                // ব্যালেন্স বা রেফারেল লেভেলে কোনো টাকা যোগ হবে না যতক্ষণ না অ্যাডমিন অ্যাপ্রুভ করে।
                 const depositData = {
                     userId: currentUserId,
+                    userDocId: currentUserDocId, // অ্যাডমিন প্যানেল থেকে অ্যাপ্রুভ করার সময় এটি কাজে লাগবে
                     amount: amount,
                     method: selectedPaymentMethod.toUpperCase(),
                     trxId: trxId,
@@ -360,50 +337,7 @@
 
                 await addDoc(collection(db, "Deposits"), depositData);
 
-                if (currentUserDocId) {
-                    const userDocRef = doc(db, "Users", currentUserDocId);
-                    const userSnap = await getDoc(userDocRef);
-
-                    if (userSnap.exists()) {
-                        const userData = userSnap.data();
-                        
-                        await updateDoc(userDocRef, {
-                            balance: increment(amount)
-                        });
-
-                        const level1Code = userData.referredBy;
-                        if (level1Code) {
-                            const l1User = await findUserDocByReferralCode(level1Code);
-                            if (l1User) {
-                                await setDoc(l1User.ref, {
-                                    teamStats: { level1Deposit: increment(amount) }
-                                }, { merge: true });
-
-                                const level2Code = l1User.data.referredBy;
-                                if (level2Code) {
-                                    const l2User = await findUserDocByReferralCode(level2Code);
-                                    if (l2User) {
-                                        await setDoc(l2User.ref, {
-                                            teamStats: { level2Deposit: increment(amount) }
-                                        }, { merge: true });
-
-                                        const level3Code = l2User.data.referredBy;
-                                        if (level3Code) {
-                                            const l3User = await findUserDocByReferralCode(level3Code);
-                                            if (l3User) {
-                                                await setDoc(l3User.ref, {
-                                                    teamStats: { level3Deposit: increment(amount) }
-                                                }, { merge: true });
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                showAlert("Deposit request submitted and multi-level team balance updated successfully!");
+                showAlert("Deposit request submitted successfully! Please wait for admin approval.");
                 
                 document.getElementById('depositAmount').value = '';
                 document.getElementById('trxIdInput').value = '';
