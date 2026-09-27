@@ -231,14 +231,27 @@
             if (user) {
                 currentUserId = user.uid;
                 currentUserEmail = user.email || user.phoneNumber || user.uid;
-            } else {
-                currentUserId = localStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserUid") || localStorage.getItem("userEmail") || sessionStorage.getItem("activeUserPhone") || sessionStorage.getItem("activeUserUid");
-                currentUserEmail = currentUserId;
-                if (!currentUserId) {
-                    window.location.href = "login.html";
-                    return;
+            } 
+            
+            if (!currentUserId || currentUserId === user?.uid) {
+                const storedPhone = localStorage.getItem("activeUserPhone") || sessionStorage.getItem("activeUserPhone");
+                if (storedPhone) {
+                    currentUserId = storedPhone;
+                    currentUserEmail = storedPhone;
+                } else {
+                    const storedUid = localStorage.getItem("activeUserUid") || sessionStorage.getItem("activeUserUid");
+                    if (storedUid) {
+                        currentUserId = storedUid;
+                        currentUserEmail = storedUid;
+                    }
                 }
             }
+
+            if (!currentUserId) {
+                window.location.href = "login.html";
+                return;
+            }
+
             fetchAgentNumbers();
             loadUserHistory(currentUserId);
         });
