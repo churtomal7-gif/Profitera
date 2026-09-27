@@ -11,7 +11,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; outline: none !important; }
         html, body { height: 100vh; width: 100vw; overflow: hidden; background: #020905; color: #ffffff; position: relative; }
         body::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 350px; height: 350px; background: rgba(0, 255, 135, 0.08); filter: blur(120px); border-radius: 50%; pointer-events: none; }
-        .wrapper { position: relative; z-index: 10; height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 20px 20px 16px 20px; }
+        .wrapper { position: relative; z-index: 10; height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 20px 20px 16px 20px; overflow-y: auto; }
         .brand-section { text-align: center; display: flex; flex-direction: column; align-items: center; }
         .brand-logo-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px; }
         .brand-logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(0, 255, 135, 0.5); box-shadow: 0 0 10px rgba(0, 255, 135, 0.4); }
@@ -20,7 +20,7 @@
         .header-sub-bar { display: flex; align-items: center; gap: 12px; margin-top: 8px; background: rgba(0, 255, 135, 0.04); border: 1px solid rgba(0, 255, 135, 0.15); padding: 4px 12px; border-radius: 20px; }
         .sub-item { font-size: 10px; color: #00ff87; font-weight: 600; display: flex; align-items: center; gap: 4px; }
         .sub-dot { width: 3px; height: 3px; background: #3b6d53; border-radius: 50%; }
-        .form-container { width: 100%; max-width: 380px; }
+        .form-container { width: 100%; max-width: 380px; margin-bottom: 10px; }
         .input-group { margin-bottom: 11px; }
         .input-group label { display: block; margin-bottom: 4px; font-size: 10px; font-weight: 700; color: #00ff87; letter-spacing: 1px; text-transform: uppercase; }
         .input-box { position: relative; display: flex; align-items: center; background: rgba(4, 28, 16, 0.7); border: 1px solid rgba(0, 255, 135, 0.2); border-radius: 12px; backdrop-filter: blur(10px); }
@@ -156,7 +156,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -182,17 +182,21 @@
 
   // Auto URL Referral Code Catch & Lock
   const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
+  let refCode = urlParams.get('ref');
   const referralInput = document.getElementById('referral');
   
   if (refCode) {
+      refCode = refCode.trim();
+      if (refCode.startsWith("880")) {
+          refCode = "+" + refCode;
+      }
       referralInput.value = refCode;
-      referralInput.readOnly = true; // ইউজার পরিবর্তন করতে পারবে না
+      referralInput.readOnly = true; 
       referralInput.style.color = "#00ff87";
       referralInput.style.cursor = "not-allowed";
   }
 
-  // Handle Form Submit
+  // Handle Form Submit with Fixed Referral Linking
   document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -203,7 +207,11 @@
       const rawPhone = document.getElementById('phone').value.trim();
       const phone = "+880" + rawPhone;
       const password = document.getElementById('password').value;
-      const referral = referralInput.value.trim();
+      let referral = referralInput.value.trim();
+
+      if (referral && referral.startsWith("880") && !referral.startsWith("+")) {
+          referral = "+" + referral;
+      }
 
       try {
           const userDocRef = doc(db, "Users", phone);
@@ -219,35 +227,100 @@
           const customUserId = "PE-" + Math.floor(1000 + Math.random() * 9000);
           const currentDate = new Date().toLocaleDateString('bn-BD');
 
-          // Save new user data
+          let level1Code = referral || "";
+          let level2Code = "";
+          let level3Code = "";
+
+          if (level1Code) {
+              let uplineRef = null;
+              let uplineSnap = null;
+
+              // 1. Check Document ID directly
+              let directRef = doc(db, "Users", level1Code);
+              let directSnap = await getDoc(directRef);
+
+              if (directSnap.exists()) {
+                  uplineRef = directRef;
+                  uplineSnap = directSnap;
+              } else {
+                  // 2. Check phoneNumber field
+                  const qPhone = query(collection(db, "Users"), where("phoneNumber", "==", level1Code));
+                  const qsPhone = await getDocs(qPhone);
+                  if (!qsPhone.empty) {
+                      uplineSnap = qsPhone.docs[0];
+                      uplineRef = doc(db, "Users", uplineSnap.id);
+                  } else {
+                      // 3. Check userId field (e.g. PE-1234)
+                      const qId = query(collection(db, "Users"), where("userId", "==", level1Code));
+                      const qsId = await getDocs(qId);
+                      if (!qsId.empty) {
+                          uplineSnap = qsId.docs[0];
+                          uplineRef = doc(db, "Users", uplineSnap.id);
+                      }
+                  }
+              }
+
+              if (uplineSnap && uplineSnap.exists()) {
+                  const l1Data = uplineSnap.data();
+                  level2Code = l1Data.referredBy || "";
+                  
+                  let currentReferred = l1Data.referredUsers || [];
+                  currentReferred.push({ phone: phone, date: currentDate });
+
+                  let stats = l1Data.teamStats || { todayAccounts: 0, level1Deposit: 0, level2Deposit: 0, level3Deposit: 0, todayDeposit: 0, todayWithdraw: 0 };
+                  stats.todayAccounts = (Number(stats.todayAccounts) || 0) + 1;
+
+                  await updateDoc(uplineRef, {
+                      referredUsers: currentReferred,
+                      teamStats: stats
+                  });
+              } else {
+                  console.warn("Upline referrer not found in database for code:", level1Code);
+              }
+          }
+
+          if (level2Code) {
+              let l2Ref = doc(db, "Users", level2Code);
+              let l2Snap = await getDoc(l2Ref);
+              if (!l2Snap.exists()) {
+                  const q = query(collection(db, "Users"), where("userId", "==", level2Code));
+                  const qs = await getDocs(q);
+                  if (!qs.empty) {
+                      l2Snap = qs.docs[0];
+                  }
+              }
+              if (l2Snap && l2Snap.exists()) {
+                  level3Code = l2Snap.data().referredBy || "";
+              }
+          }
+
           await setDoc(userDocRef, {
               fullName: name,
               phoneNumber: phone,
               password: password,
               userId: customUserId,
               balance: 0.00,
-              referralCode: referral || "",
+              referredBy: level1Code,
+              level2By: level2Code,
+              level3By: level3Code,
+              referredUsers: [],
+              teamStats: {
+                  todayAccounts: 0,
+                  level1Deposit: 0,
+                  level2Deposit: 0,
+                  level3Deposit: 0,
+                  todayDeposit: 0,
+                  todayWithdraw: 0
+              },
               createdAt: new Date(),
               authProvider: "Phone"
           });
 
-          // If valid referral code exists, push this user info to the upline referrer's profile
-          if (referral) {
-              const uplineRef = doc(db, "Users", referral);
-              const uplineSnap = await getDoc(uplineRef);
-              if (uplineSnap.exists()) {
-                  await updateDoc(uplineRef, {
-                      referredUsers: arrayUnion({
-                          phone: phone,
-                          date: currentDate
-                      })
-                  });
-              }
-          }
-
           sessionStorage.setItem("activeUserPhone", phone);
+          localStorage.setItem("activeUserPhone", phone);
           window.location.href = "dashboard.html";
       } catch (error) {
+          console.error("Signup Error:", error);
           showCustomAlert("Error: " + error.message);
           submitBtn.innerText = "Create Account";
           submitBtn.disabled = false;
@@ -269,12 +342,23 @@
               email: user.email,
               userId: customUserId,
               balance: 0.00,
+              referredBy: "",
+              referredUsers: [],
+              teamStats: {
+                  todayAccounts: 0,
+                  level1Deposit: 0,
+                  level2Deposit: 0,
+                  level3Deposit: 0,
+                  todayDeposit: 0,
+                  todayWithdraw: 0
+              },
               photoURL: user.photoURL,
               createdAt: new Date(),
               authProvider: "Google"
           }, { merge: true });
 
-          sessionStorage.setItem("activeUserPhone", user.email);
+          sessionStorage.setItem("activeUserUid", user.uid);
+          localStorage.setItem("activeUserUid", user.uid);
           window.location.href = "dashboard.html";
       } catch (error) {
           showCustomAlert("Google Sign-In Error: " + error.message);
