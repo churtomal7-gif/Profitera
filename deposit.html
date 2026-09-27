@@ -328,42 +328,71 @@
                     amount: amount,
                     method: selectedPaymentMethod.toUpperCase(),
                     trxId: trxId,
-                    status: "Pending", // চাইলে এখানে সরাসরি "Success" দিলে সাথে সাথে ব্যালেন্স যোগ হয়ে যাবে
+                    status: "Pending",
                     timestamp: serverTimestamp()
                 };
 
                 await addDoc(collection(db, "Deposits"), depositData);
 
-                // ১. ইউজারের নিজের ব্যালেন্স বা মেইন অ্যাকাউন্টে টাকা আপডেট করা
+                // ১. ইউজারের নিজের ব্যালেন্স আপডেট করা
                 if (currentUserDocId) {
                     const userDocRef = doc(db, "Users", currentUserDocId);
-                    
-                    // সরাসরি ইউজারের ব্যালেন্স বাড়িয়ে দেওয়া (ইনক্রিমেন্ট)
                     await updateDoc(userDocRef, {
                         balance: increment(amount)
                     });
 
-                    // ২. রেফারারের লেভেল ১ স্ট্যাটাস আপডেট করা
+                    // ২. মাল্টি-লেভেল রেফারেল (Level 1, Level 2, Level 3) টিম স্ট্যাটাস আপডেট লজিক
                     const userSnap = await getDoc(userDocRef);
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
-                        const referredByCode = userData.referredBy;
+                        
+                        // Level 1 Referrer
+                        const level1Code = userData.referredBy;
+                        if (level1Code) {
+                            const l1Query = query(collection(db, "Users"), where("userId", "==", level1Code));
+                            const l1Snap = await getDocs(l1Query);
 
-                        if (referredByCode) {
-                            const refQuery = query(collection(db, "Users"), where("userId", "==", referredByCode));
-                            const refSnap = await getDocs(refQuery);
-
-                            if (!refSnap.empty) {
-                                const referrerDocRef = refSnap.docs[0].ref;
-                                await updateDoc(referrerDocRef, {
+                            if (!l1Snap.empty) {
+                                const l1Doc = l1Snap.docs[0];
+                                await updateDoc(l1Doc.ref, {
                                     "teamStats.level1Deposit": increment(amount)
                                 });
+
+                                // Level 2 Referrer
+                                const l1Data = l1Doc.data();
+                                const level2Code = l1Data.referredBy;
+                                if (level2Code) {
+                                    const l2Query = query(collection(db, "Users"), where("userId", "==", level2Code));
+                                    const l2Snap = await getDocs(l2Query);
+
+                                    if (!l2Snap.empty) {
+                                        const l2Doc = l2Snap.docs[0];
+                                        await updateDoc(l2Doc.ref, {
+                                            "teamStats.level2Deposit": increment(amount)
+                                        });
+
+                                        // Level 3 Referrer
+                                        const l2Data = l2Doc.data();
+                                        const level3Code = l2Data.referredBy;
+                                        if (level3Code) {
+                                            const l3Query = query(collection(db, "Users"), where("userId", "==", level3Code));
+                                            const l3Snap = await getDocs(l3Query);
+
+                                            if (!l3Snap.empty) {
+                                                const l3Doc = l3Snap.docs[0];
+                                                await updateDoc(l3Doc.ref, {
+                                                    "teamStats.level3Deposit": increment(amount)
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
 
-                showAlert("Deposit request submitted and balance updated successfully!");
+                showAlert("Deposit request submitted and multi-level team balance updated successfully!");
                 
                 document.getElementById('depositAmount').value = '';
                 document.getElementById('trxIdInput').value = '';
