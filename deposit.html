@@ -183,7 +183,7 @@
         let selectedPaymentMethod = "bkash";
         let agentNumbersData = { bkash: "", nogod: "" };
         let currentUserId = "";
-        let currentUserDocId = ""; // ইউজারের মূল ফায়ারবেজ ডকুমেন্ট আইডি বা ফোন নম্বর
+        let currentUserDocId = ""; 
 
         window.showAlert = function(msg) {
             document.getElementById('customAlertMsg').innerText = msg;
@@ -235,7 +235,6 @@
             }
 
             try {
-                // ১. সরাসরি Users কালেকশনে ফোন নম্বর দিয়ে ডকুমেন্ট চেক করা
                 const docRef = doc(db, "Users", cleanPhone);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
@@ -243,7 +242,6 @@
                     return docSnap.data().userId || cleanPhone;
                 }
 
-                // ২. phoneNumber ফিল্ড দিয়ে কুয়েরি করা
                 const q = query(collection(db, "Users"), where("phoneNumber", "==", cleanPhone));
                 const querySnap = await getDocs(q);
                 if (!querySnap.empty) {
@@ -251,7 +249,6 @@
                     return querySnap.docs[0].data().userId;
                 }
 
-                // ৩. সরাসরি userId দিয়ে ডকুমেন্ট চেক করা
                 const docRef2 = doc(db, "Users", phoneOrId);
                 const docSnap2 = await getDoc(docRef2);
                 if (docSnap2.exists()) {
@@ -293,36 +290,6 @@
         onAuthStateChanged(auth, () => { initUserSession(); });
         initUserSession();
 
-        // রেফারারের লেভেল ১ ডিপোজিট স্ট্যাটাস আপডেট করার ফাংশন
-        async function updateReferrerLevel1(userDocId, depositAmount) {
-            try {
-                if (!userDocId) return;
-                const userDocRef = doc(db, "Users", userDocId);
-                const userSnap = await getDoc(userDocRef);
-                
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    const referredByCode = userData.referredBy; // যার লিংকে একাউন্ট খোলা হয়েছে (যেমন PE-5096 বা রেফারেল কোড)
-
-                    if (referredByCode) {
-                        // রেফারার কোড দিয়ে আপলাইন বা রেফারার ইউজারকে খোঁজা
-                        const refQuery = query(collection(db, "Users"), where("userId", "==", referredByCode));
-                        const refSnap = await getDocs(refQuery);
-
-                        if (!refSnap.empty) {
-                            const referrerDocRef = refSnap.docs[0].ref;
-                            // আপলাইনের teamStats.level1Deposit বা লেভেল ১ কাউন্ট আপডেট করা
-                            await updateDoc(referrerDocRef, {
-                                "teamStats.level1Deposit": increment(depositAmount)
-                            });
-                        }
-                    }
-                }
-            } catch (err) {
-                console.error("Error updating referrer stats:", err);
-            }
-        }
-
         window.submitDeposit = async function() {
             const amountInput = document.getElementById('depositAmount').value.trim();
             const trxId = document.getElementById('trxIdInput').value.trim();
@@ -361,18 +328,42 @@
                     amount: amount,
                     method: selectedPaymentMethod.toUpperCase(),
                     trxId: trxId,
-                    status: "Pending",
+                    status: "Pending", // চাইলে এখানে সরাসরি "Success" দিলে সাথে সাথে ব্যালেন্স যোগ হয়ে যাবে
                     timestamp: serverTimestamp()
                 };
 
                 await addDoc(collection(db, "Deposits"), depositData);
 
-                // ডিপোজিট সফলভাবে সাবমিট হওয়ার সাথে সাথে রেফারারের লেভেল ১ কাউন্টে যোগ করা
+                // ১. ইউজারের নিজের ব্যালেন্স বা মেইন অ্যাকাউন্টে টাকা আপডেট করা
                 if (currentUserDocId) {
-                    await updateReferrerLevel1(currentUserDocId, amount);
+                    const userDocRef = doc(db, "Users", currentUserDocId);
+                    
+                    // সরাসরি ইউজারের ব্যালেন্স বাড়িয়ে দেওয়া (ইনক্রিমেন্ট)
+                    await updateDoc(userDocRef, {
+                        balance: increment(amount)
+                    });
+
+                    // ২. রেফারারের লেভেল ১ স্ট্যাটাস আপডেট করা
+                    const userSnap = await getDoc(userDocRef);
+                    if (userSnap.exists()) {
+                        const userData = userSnap.data();
+                        const referredByCode = userData.referredBy;
+
+                        if (referredByCode) {
+                            const refQuery = query(collection(db, "Users"), where("userId", "==", referredByCode));
+                            const refSnap = await getDocs(refQuery);
+
+                            if (!refSnap.empty) {
+                                const referrerDocRef = refSnap.docs[0].ref;
+                                await updateDoc(referrerDocRef, {
+                                    "teamStats.level1Deposit": increment(amount)
+                                });
+                            }
+                        }
+                    }
                 }
 
-                showAlert("Deposit request submitted successfully!");
+                showAlert("Deposit request submitted and balance updated successfully!");
                 
                 document.getElementById('depositAmount').value = '';
                 document.getElementById('trxIdInput').value = '';
