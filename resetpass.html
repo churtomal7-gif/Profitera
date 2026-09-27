@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Reset Password</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        body {
+            background: #020905;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Container Card */
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(4, 28, 16, 0.75);
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            border-radius: 24px;
+            padding: 30px 22px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 135, 0.1);
+        }
+
+        /* Logo / Header Section */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .auth-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(0, 255, 135, 0.6);
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.4);
+            margin-bottom: 12px;
+        }
+
+        .auth-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffffff 0%, #00ff87 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px;
+        }
+
+        .auth-header p {
+            font-size: 12.5px;
+            color: #799988;
+            font-weight: 500;
+        }
+
+        /* Input Group */
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #a3c2b2;
+            margin-bottom: 6px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper > i:first-child {
+            position: absolute;
+            left: 14px;
+            color: #618270;
+            font-size: 15px;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(0, 255, 135, 0.04);
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            border-radius: 12px;
+            padding: 12px 40px 12px 42px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #00ff87;
+            background: rgba(0, 255, 135, 0.08);
+            box-shadow: 0 0 12px rgba(0, 255, 135, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: #516e5f;
+            font-weight: 500;
+        }
+
+        /* Toggle Eye Icon */
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            color: #618270;
+            cursor: pointer;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: #00ff87;
+        }
+
+        /* Action Button */
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            color: #01140a;
+            border: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.3);
+            transition: transform 0.2s;
+            margin-top: 5px;
+        }
+
+        .auth-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Support Text & Back Link */
+        .support-notice {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #799988;
+            line-height: 1.5;
+        }
+
+        .support-notice a {
+            color: #00ff87;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .support-notice a:hover {
+            text-decoration: underline;
+        }
+
+        .auth-footer-link {
+            text-align: center;
+            margin-top: 15px;
+            border-top: 1px solid rgba(0, 255, 135, 0.1);
+            padding-top: 15px;
+        }
+
+        .auth-footer-link a {
+            color: #00ff87;
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        /* Custom Alert Popup Styles */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .custom-alert-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-alert-card {
+            width: 100%; max-width: 320px;
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 20px; padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
+        }
+
+        .custom-alert-icon {
+            width: 50px; height: 50px;
+            background: rgba(0, 255, 135, 0.1);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; color: #00ff87; font-size: 20px;
+        }
+
+        .custom-alert-title {
+            font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;
+        }
+
+        .custom-alert-message {
+            font-size: 12.5px; color: #c2d6cc; line-height: 1.5; margin-bottom: 20px;
+        }
+
+        .custom-alert-btn {
+            width: 100%; padding: 11px;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            border: none; border-radius: 12px;
+            color: #01140a; font-size: 12px; font-weight: 800;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="auth-container">
+        <div class="auth-header">
+            <img src="profitera.png" alt="Logo" class="auth-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135706.png'">
+            <h1>ProfitEra</h1>
+            <p>পাসওয়ার্ড পরিবর্তন করুন</p>
+        </div>
+
+        <!-- Old Password -->
+        <div class="input-group">
+            <label class="input-label">পুরানো পাসওয়ার্ড (Old Password)</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="oldPassword" class="input-field" placeholder="পুরানো পাসওয়ার্ড দিন">
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePass('oldPassword', this)"></i>
+            </div>
+        </div>
+
+        <!-- New Password -->
+        <div class="input-group">
+            <label class="input-label">নতুন পাসওয়ার্ড (New Password)</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="newPassword" class="input-field" placeholder="কমপক্ষে ৬ অক্ষরের নতুন পাসওয়ার্ড">
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePass('newPassword', this)"></i>
+            </div>
+        </div>
+
+        <!-- Confirm New Password -->
+        <div class="input-group">
+            <label class="input-label">কনফার্ম নতুন পাসওয়ার্ড (Confirm Password)</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-shield-halved"></i>
+                <input type="password" id="confirmPassword" class="input-field" placeholder="আবার নতুন পাসওয়ার্ড দিন">
+                <i class="fa-solid fa-eye toggle-password" onclick="togglePass('confirmPassword', this)"></i>
+            </div>
+        </div>
+
+        <button class="auth-btn" onclick="handleUpdatePassword()">পাসওয়ার্ড আপডেট করুন</button>
+
+        <!-- Customer Care Notice (Directly links to Telegram Channel/Support) -->
+        <div class="support-notice">
+            যদি পুরানো পাসওয়ার্ডও মনে না থাকে, তাহলে <a href="https://t.me/your_telegram_channel" target="_blank"><i class="fa-brands fa-telegram"></i> কাস্টমার কেয়ারে যোগাযোগ করুন</a>।
+        </div>
+
+        <div class="auth-footer-link">
+            <a href="dashboard.html"><i class="fa-solid fa-arrow-left" style="margin-right: 5px;"></i> ড্যাশবোর্ডে ফিরে যান</a>
+        </div>
+    </div>
+
+    <!-- Custom Alert Popup -->
+    <div class="custom-alert-overlay" id="customAlertBox">
+        <div class="custom-alert-card">
+            <div class="custom-alert-icon" id="customAlertIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="custom-alert-title" id="customAlertTitle">Success</div>
+            <div class="custom-alert-message" id="customAlertMsg">Message goes here...</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">ঠিক আছে</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs & Session / Update Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, updatePassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let activeUserEmail = "";
+        let currentUserUid = null;
+
+        // Session ID check system
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                activeUserEmail = user.email;
+            } else {
+                const activeUid = sessionStorage.getItem("activeUserUid") || localStorage.getItem("activeUserUid");
+                const activePhone = sessionStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserPhone");
+                
+                if (activeUid || activePhone) {
+                    currentUserUid = activeUid || activePhone;
+                    try {
+                        const userDocRef = doc(db, "Users", currentUserUid);
+                        const userDocSnap = await getDoc(userDocRef);
+                        if (userDocSnap.exists()) {
+                            const userData = userDocSnap.data();
+                            activeUserEmail = userData.email || (userData.phoneNumber + "@profitera.com");
+                        } else {
+                            window.location.href = "login.html";
+                        }
+                    } catch (err) {
+                        console.error("Session fetch error:", err);
+                        window.location.href = "login.html";
+                    }
+                } else {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
+        // Toggle Password visibility function
+        window.togglePass = function(fieldId, iconElem) {
+            const field = document.getElementById(fieldId);
+            if (field.type === "password") {
+                field.type = "text";
+                iconElem.classList.remove("fa-eye");
+                iconElem.classList.add("fa-eye-slash");
+            } else {
+                field.type = "password";
+                iconElem.classList.remove("fa-eye-slash");
+                iconElem.classList.add("fa-eye");
+            }
+        };
+
+        window.showAlert = function(title, message, type = "success") {
+            const alertBox = document.getElementById("customAlertBox");
+            const titleElem = document.getElementById("customAlertTitle");
+            const msgElem = document.getElementById("customAlertMsg");
+            const iconElem = document.getElementById("customAlertIcon");
+
+            if (titleElem) titleElem.innerText = title;
+            if (msgElem) msgElem.innerText = message;
+            
+            if (iconElem) {
+                if (type === "error") {
+                    iconElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                    iconElem.style.color = "#ff4d4d";
+                    iconElem.style.borderColor = "rgba(255, 77, 77, 0.4)";
+                    iconElem.style.background = "rgba(255, 77, 77, 0.1)";
+                } else {
+                    iconElem.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    iconElem.style.color = "#00ff87";
+                    iconElem.style.borderColor = "rgba(0, 255, 135, 0.3)";
+                    iconElem.style.background = "rgba(0, 255, 135, 0.1)";
+                }
+            }
+            if (alertBox) alertBox.classList.add("active");
+        };
+
+        window.closeCustomAlert = function() {
+            const alertBox = document.getElementById("customAlertBox");
+            if (alertBox) alertBox.classList.remove("active");
+        };
+
+        window.handleUpdatePassword = async function() {
+            const oldPass = document.getElementById('oldPassword').value;
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (!oldPass || !newPass || !confirmPass) {
+                showAlert("সতর্কতা", "সবগুলো ফিল্ড সঠিকভাবে পূরণ করুন।", "error");
+                return;
+            }
+
+            if (newPass.length < 6) {
+                showAlert("দুর্বল পাসওয়ার্ড", "নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।", "error");
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                showAlert("মিলেনি", "নতুন পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড এক হয়নি।", "error");
+                return;
+            }
+
+            const user = auth.currentUser;
+            if (!user && !activeUserEmail) {
+                showAlert("লগইন ত্রুটি", "দয়া করে আবার লগইন করুন।", "error");
+                setTimeout(() => { window.location.href = "login.html"; }, 1500);
+                return;
+            }
+
+            try {
+                let targetEmail = user ? user.email : activeUserEmail;
+                await signInWithEmailAndPassword(auth, targetEmail, oldPass);
+
+                const currentUserObj = auth.currentUser;
+                await updatePassword(currentUserObj, newPass);
+
+                showAlert("সফল!", "আপনার পাসওয়ার্ড সফলভাবে আপডেট করা হয়েছে।", "success");
+                
+                document.getElementById('oldPassword').value = "";
+                document.getElementById('newPassword').value = "";
+                document.getElementById('confirmPassword').value = "";
+
+            } catch (error) {
+                console.error("Password update error:", error);
+                showAlert("ভুল পাসওয়ার্ড", "আপনার পুরানো পাসওয়ার্ডটি সঠিক নয়। দয়া করে সঠিক পাসওয়ার্ড দিন।", "error");
+            }
+        };
+    </script>
+</body>
+</html>
