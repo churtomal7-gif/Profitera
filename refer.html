@@ -66,7 +66,46 @@
             margin-left: 4px;
         }
 
-        /* Referral Link Box (Top) */
+        /* Hero Banner Card */
+        .refer-hero-card {
+            background: linear-gradient(135deg, rgba(4, 28, 16, 0.9) 0%, rgba(2, 48, 25, 0.9) 100%);
+            border: 1px solid rgba(0, 255, 135, 0.25);
+            border-radius: 16px;
+            padding: 20px 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 255, 135, 0.12);
+        }
+
+        .refer-hero-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 255, 135, 0.12);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: #00ff87;
+            font-size: 20px;
+        }
+
+        .refer-hero-card h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .refer-hero-card p {
+            font-size: 12px;
+            color: #a3c2b2;
+            line-height: 1.5;
+        }
+
+        /* Referral Link Box */
         .refer-link-card {
             background: rgba(4, 28, 16, 0.65);
             border: 1px solid rgba(0, 255, 135, 0.18);
@@ -92,6 +131,7 @@
             border-radius: 12px;
             padding: 8px 12px;
             gap: 10px;
+            margin-bottom: 12px;
         }
 
         .link-input {
@@ -118,10 +158,36 @@
             text-transform: uppercase;
             white-space: nowrap;
             box-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .copy-btn:active {
             transform: scale(0.95);
+        }
+
+        .share-btn-main {
+            width: 100%;
+            background: rgba(0, 255, 135, 0.12);
+            color: #00ff87;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            padding: 11px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .share-btn-main:active {
+            background: rgba(0, 255, 135, 0.25);
         }
 
         /* My Team Revenue Section */
@@ -202,6 +268,105 @@
             border: 1px solid rgba(0, 255, 135, 0.3);
         }
 
+        /* Referred Users List Section */
+        .referred-list-section {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 16px;
+            padding: 16px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+        }
+
+        .referred-user-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 255, 135, 0.12);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+        }
+
+        .referred-user-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .referred-user-item .u-phone {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .referred-user-item .u-date {
+            font-size: 11px;
+            color: #799988;
+        }
+
+        .no-referral-box {
+            text-align: center;
+            color: #799988;
+            font-size: 12.5px;
+            padding: 15px;
+        }
+
+        /* Custom Alert Popup Styles */
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .custom-alert-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .custom-alert-card {
+            width: 100%; max-width: 320px;
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 20px; padding: 22px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.2);
+        }
+
+        .custom-alert-icon {
+            width: 50px; height: 50px;
+            background: rgba(0, 255, 135, 0.1);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 12px; color: #00ff87; font-size: 20px;
+        }
+
+        .custom-alert-title {
+            font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 8px;
+        }
+
+        .custom-alert-message {
+            font-size: 12.5px; color: #c2d6cc; line-height: 1.5; margin-bottom: 20px;
+        }
+
+        .custom-alert-btn {
+            width: 100%; padding: 11px;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            border: none; border-radius: 12px;
+            color: #01140a; font-size: 12px; font-weight: 800;
+            cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 255, 135, 0.2);
+        }
+
         /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
@@ -229,14 +394,24 @@
     <!-- Refer Container -->
     <div class="refer-container">
         
+        <!-- Hero Banner Card -->
+        <div class="refer-hero-card">
+            <div class="refer-hero-icon"><i class="fa-solid fa-users"></i></div>
+            <h3>বন্ধুদের আমন্ত্রণ জানান</h3>
+            <p>আপনার রেফারাল লিংক শেয়ার করুন এবং প্রতি সফল রেফারে আকর্ষণীয় টিম কমিশন ও বোনাস আয় করুন!</p>
+        </div>
+
         <!-- Referral Link Section -->
         <div class="section-title">Referral Link</div>
         <div class="refer-link-card">
             <div class="refer-link-label">Invite your friends & earn commission</div>
             <div class="link-copy-wrapper">
-                <input type="text" id="referLinkInput" class="link-input" value="https://profitera.com/register?ref=XR78954" readonly>
-                <button class="copy-btn" onclick="copyReferLink()">Copy Link</button>
+                <input type="text" id="referLinkInput" class="link-input" value="লোড হচ্ছে..." readonly>
+                <button class="copy-btn" onclick="copyReferLink()"><i class="fa-regular fa-copy"></i> Copy</button>
             </div>
+            <button class="share-btn-main" onclick="shareReferralLink()">
+                <i class="fa-solid fa-share-nodes"></i> Share Link
+            </button>
         </div>
 
         <!-- My Team Revenue Section -->
@@ -244,31 +419,31 @@
         <div class="revenue-grid">
             <div class="revenue-card">
                 <div class="revenue-label">Total Accounts</div>
-                <div class="revenue-value">০</div>
+                <div class="revenue-value" id="totalAccounts">০</div>
             </div>
             <div class="revenue-card">
                 <div class="revenue-label">Today Accounts</div>
-                <div class="revenue-value">০</div>
+                <div class="revenue-value" id="todayAccounts">০</div>
             </div>
             <div class="revenue-card">
                 <div class="revenue-label">Level 1 Deposit</div>
-                <div class="revenue-value green">৳ ০.০০</div>
+                <div class="revenue-value green" id="level1Deposit">৳ ০.০০</div>
             </div>
             <div class="revenue-card">
                 <div class="revenue-label">Level 2 Deposit</div>
-                <div class="revenue-value green">৳ ০.০০</div>
+                <div class="revenue-value green" id="level2Deposit">৳ ০.০০</div>
             </div>
             <div class="revenue-card full-width">
                 <div class="revenue-label">Level 3 Deposit</div>
-                <div class="revenue-value green">৳ ০.০০</div>
+                <div class="revenue-value green" id="level3Deposit">৳ ০.০০</div>
             </div>
             <div class="revenue-card">
                 <div class="revenue-label">Today Total Deposit</div>
-                <div class="revenue-value green">৳ ০.০০</div>
+                <div class="revenue-value green" id="todayDeposit">৳ ০.০০</div>
             </div>
             <div class="revenue-card">
                 <div class="revenue-label">Today Total Withdraw</div>
-                <div class="revenue-value">৳ ০.০০</div>
+                <div class="revenue-value" id="todayWithdraw">৳ ০.০০</div>
             </div>
         </div>
 
@@ -289,6 +464,24 @@
             </div>
         </div>
 
+        <!-- Referred Users List Section -->
+        <div class="section-title">রেফারকৃত ব্যবহারকারীগণ</div>
+        <div class="referred-list-section">
+            <div id="referredUsersContainer">
+                <div class="no-referral-box">এখনো কোনো রেফার নেই</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Custom Alert Popup -->
+    <div class="custom-alert-overlay" id="customAlertBox">
+        <div class="custom-alert-card">
+            <div class="custom-alert-icon" id="customAlertIcon"><i class="fa-solid fa-check"></i></div>
+            <div class="custom-alert-title" id="customAlertTitle">Success</div>
+            <div class="custom-alert-message" id="customAlertMsg">Message goes here...</div>
+            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+        </div>
     </div>
 
     <!-- Bottom Navigation Bar -->
@@ -321,19 +514,149 @@
         </a>
     </div>
 
-    <script>
-        // Copy Refer Link Function
-        function copyReferLink() {
-            const linkInput = document.getElementById('referLinkInput');
-            linkInput.select();
-            linkInput.setSelectionRange(0, 99999); // For mobile devices
+    <!-- Firebase SDKs & Script Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.showAlert = function(title, message, type = "success") {
+            const alertBox = document.getElementById("customAlertBox");
+            const titleElem = document.getElementById("customAlertTitle");
+            const msgElem = document.getElementById("customAlertMsg");
+            const iconElem = document.getElementById("customAlertIcon");
+
+            if (titleElem) titleElem.innerText = title;
+            if (msgElem) msgElem.innerText = message;
             
-            navigator.clipboard.writeText(linkInput.value).then(() => {
-                alert('Referral link copied successfully!');
-            }).catch(err => {
-                alert('Failed to copy link!');
-            });
+            if (iconElem) {
+                if (type === "error") {
+                    iconElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                    iconElem.style.color = "#ff4d4d";
+                    iconElem.style.borderColor = "rgba(255, 77, 77, 0.4)";
+                    iconElem.style.background = "rgba(255, 77, 77, 0.1)";
+                } else {
+                    iconElem.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    iconElem.style.color = "#00ff87";
+                    iconElem.style.borderColor = "rgba(0, 255, 135, 0.3)";
+                    iconElem.style.background = "rgba(0, 255, 135, 0.1)";
+                }
+            }
+            if (alertBox) alertBox.classList.add("active");
+        };
+
+        window.closeCustomAlert = function() {
+            const alertBox = document.getElementById("customAlertBox");
+            if (alertBox) alertBox.classList.remove("active");
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                await fetchReferralData(user.uid);
+            } else {
+                const activeUid = sessionStorage.getItem("activeUserUid") || localStorage.getItem("activeUserUid");
+                const activePhone = sessionStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserPhone");
+                if (activeUid) {
+                    await fetchReferralData(activeUid);
+                } else if (activePhone) {
+                    await fetchReferralData(activePhone);
+                } else {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
+        async function fetchReferralData(identifier) {
+            try {
+                const docRef = doc(db, "Users", identifier);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    const userReferralCode = data.phoneNumber || data.userId || identifier;
+                    
+                    // Automatically point to signup0.html matching current render domain
+                    const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/signup0.html';
+                    const fullLink = `${baseUrl}?ref=${userReferralCode}`;
+                    
+                    const inputElem = document.getElementById("referLinkInput");
+                    if (inputElem) inputElem.value = fullLink;
+
+                    // Team Revenue & Stats Update
+                    const referredList = data.referredUsers || []; 
+                    
+                    document.getElementById("totalAccounts").innerText = referredList.length;
+                    
+                    if(data.teamStats) {
+                        document.getElementById("todayAccounts").innerText = data.teamStats.todayAccounts || "০";
+                        document.getElementById("level1Deposit").innerText = `৳ ${data.teamStats.level1Deposit || "০.০০"}`;
+                        document.getElementById("level2Deposit").innerText = `৳ ${data.teamStats.level2Deposit || "০.০০"}`;
+                        document.getElementById("level3Deposit").innerText = `৳ ${data.teamStats.level3Deposit || "০.০০"}`;
+                        document.getElementById("todayDeposit").innerText = `৳ ${data.teamStats.todayDeposit || "০.০০"}`;
+                        document.getElementById("todayWithdraw").innerText = `৳ ${data.teamStats.todayWithdraw || "৳ ০.০০"}`;
+                    }
+
+                    const containerElem = document.getElementById("referredUsersContainer");
+                    if (referredList.length > 0) {
+                        let html = "";
+                        referredList.forEach(item => {
+                            let phone = typeof item === 'string' ? item : (item.phone || "User");
+                            let date = typeof item === 'object' && item.date ? item.date : "Recent";
+                            html += `
+                                <div class="referred-user-item">
+                                    <span class="u-phone"><i class="fa-solid fa-user-check" style="color: #00ff87; margin-right: 6px;"></i> ${phone}</span>
+                                    <span class="u-date">${date}</span>
+                                </div>
+                            `;
+                        });
+                        if (containerElem) containerElem.innerHTML = html;
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching referral data:", error);
+            }
         }
+
+        window.copyReferLink = function() {
+            const linkInput = document.getElementById('referLinkInput');
+            if (!linkInput || !linkInput.value) return;
+
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+                showAlert("সফল!", "রেফারেল লিংক সফলভাবে কপি করা হয়েছে!", "success");
+            }).catch(err => {
+                linkInput.select();
+                document.execCommand("copy");
+                showAlert("সফল!", "রেফারেল লিংক কপি করা হয়েছে!", "success");
+            });
+        };
+
+        window.shareReferralLink = function() {
+            const linkInput = document.getElementById('referLinkInput');
+            if (!linkInput || !linkInput.value) return;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'ProfitEra',
+                    text: 'ProfitEra-তে যোগ দিন এবং প্রতিদিন আয় করুন!',
+                    url: linkInput.value,
+                }).catch((error) => console.log('Sharing failed', error));
+            } else {
+                copyReferLink();
+            }
+        };
     </script>
 </body>
 </html>
