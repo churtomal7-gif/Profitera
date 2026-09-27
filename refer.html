@@ -586,7 +586,23 @@
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     
-                    const userReferralCode = data.phoneNumber || data.userId || identifier;
+                    // Firestore থেকে ইউজারের কাস্টম রেফারেল কোড (userId) নেওয়া
+                    // যদি userId ডাটাবেজে সেভ করা না থাকে, তবে ফোন নাম্বারের শেষ ৫ ডিজিট থেকে জেনারেট করে নেওয়া হবে
+                    let userReferralCode = data.userId;
+                    
+                    if (!userReferralCode) {
+                        let phoneStr = data.phoneNumber || identifier;
+                        let last5Digits = phoneStr.slice(-5);
+                        const digitMap = {
+                            '0': 'J', '1': 'A', '2': 'B', '3': 'C', '4': 'D',
+                            '5': 'E', '6': 'F', '7': 'G', '8': 'H', '9': 'I'
+                        };
+                        let letters = '';
+                        for (let char of last5Digits) {
+                            letters += digitMap[char] || 'X';
+                        }
+                        userReferralCode = letters + last5Digits;
+                    }
                     
                     // Automatically point to signup0.html matching current render domain
                     const baseUrl = window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/signup0.html';
@@ -616,10 +632,10 @@
                             let phone = typeof item === 'string' ? item : (item.phone || "User");
                             let date = typeof item === 'object' && item.date ? item.date : "Recent";
                             html += `
-                                <div class="referred-user-item">
-                                    <span class="u-phone"><i class="fa-solid fa-user-check" style="color: #00ff87; margin-right: 6px;"></i> ${phone}</span>
-                                    <span class="u-date">${date}</span>
-                                </div>
+                                ` + `<div class="referred-user-item">` + `
+                                    ` + `<span class="u-phone"><i class="fa-solid fa-user-check" style="color: #00ff87; margin-right: 6px;"></i> ${phone}</span>` + `
+                                    ` + `<span class="u-date">${date}</span>` + `
+                                ` + `</div>` + `
                             `;
                         });
                         if (containerElem) containerElem.innerHTML = html;
