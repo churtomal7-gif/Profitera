@@ -165,7 +165,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -293,11 +293,21 @@
         async function findUserDocByReferralCode(refCode) {
             if (!refCode) return null;
             try {
+                // ১. userId ফিল্ড দিয়ে খোঁজা
                 const q = query(collection(db, "Users"), where("userId", "==", refCode));
                 const snap = await getDocs(q);
                 if (!snap.empty) {
                     return { ref: snap.docs[0].ref, data: snap.docs[0].data() };
                 }
+
+                // ২. phoneNumber ফিল্ড দিয়ে খোঁজা
+                const qPhone = query(collection(db, "Users"), where("phoneNumber", "==", refCode));
+                const snapPhone = await getDocs(qPhone);
+                if (!snapPhone.empty) {
+                    return { ref: snapPhone.docs[0].ref, data: snapPhonePhone.docs[0].data() };
+                }
+
+                // ৩. ডিরেক্ট ডকুমেন্ট আইডি দিয়ে চেক করা
                 const directRef = doc(db, "Users", refCode);
                 const directSnap = await getDoc(directRef);
                 if (directSnap.exists()) {
@@ -356,38 +366,39 @@
                 // ১. ইউজারের নিজের ব্যালেন্স আপডেট
                 if (currentUserDocId) {
                     const userDocRef = doc(db, "Users", currentUserDocId);
-                    await updateDoc(userDocRef, {
-                        balance: increment(amount)
-                    });
-
-                    // ২. মাল্টি-লেভেল (L1, L2, L3) আপডেট সেইফ লজিক
                     const userSnap = await getDoc(userDocRef);
+
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
-                        const level1Code = userData.referredBy;
+                        
+                        // নিজের ব্যালেন্স আপডেট
+                        await updateDoc(userDocRef, {
+                            balance: increment(amount)
+                        });
 
+                        // ২. Level 1 Upline Update
+                        const level1Code = userData.referredBy;
                         if (level1Code) {
                             const l1User = await findUserDocByReferralCode(level1Code);
                             if (l1User) {
-                                // Level 1 Update (Safe with setDoc merge)
                                 await setDoc(l1User.ref, {
                                     teamStats: { level1Deposit: increment(amount) }
                                 }, { merge: true });
 
+                                // ৩. Level 2 Upline Update
                                 const level2Code = l1User.data.referredBy;
                                 if (level2Code) {
                                     const l2User = await findUserDocByReferralCode(level2Code);
                                     if (l2User) {
-                                        // Level 2 Update
                                         await setDoc(l2User.ref, {
                                             teamStats: { level2Deposit: increment(amount) }
                                         }, { merge: true });
 
+                                        // ৪. Level 3 Upline Update
                                         const level3Code = l2User.data.referredBy;
                                         if (level3Code) {
                                             const l3User = await findUserDocByReferralCode(level3Code);
                                             if (l3User) {
-                                                // Level 3 Update
                                                 await setDoc(l3User.ref, {
                                                     teamStats: { level3Deposit: increment(amount) }
                                                 }, { merge: true });
@@ -400,7 +411,7 @@
                     }
                 }
 
-                showAlert("Deposit request submitted successfully!");
+                showAlert("Deposit request submitted and multi-level team balance updated successfully!");
                 
                 document.getElementById('depositAmount').value = '';
                 document.getElementById('trxIdInput').value = '';
