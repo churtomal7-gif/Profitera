@@ -290,6 +290,26 @@
         onAuthStateChanged(auth, () => { initUserSession(); });
         initUserSession();
 
+        async function findUserDocByReferralCode(refCode) {
+            if (!refCode) return null;
+            try {
+                const q = query(collection(db, "Users"), where("userId", "==", refCode));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    return { ref: snap.docs[0].ref, data: snap.docs[0].data() };
+                }
+                // Fallback direct doc id check
+                const directRef = doc(db, "Users", refCode);
+                const directSnap = await getDoc(directRef);
+                if (directSnap.exists()) {
+                    return { ref: directRef, data: directSnap.data() };
+                }
+            } catch (err) {
+                console.error("Error finding referral:", err);
+            }
+            return null;
+        }
+
         window.submitDeposit = async function() {
             const amountInput = document.getElementById('depositAmount').value.trim();
             const trxId = document.getElementById('trxIdInput').value.trim();
@@ -341,46 +361,35 @@
                         balance: increment(amount)
                     });
 
-                    // ২. মাল্টি-লেভেল রেফারেল (Level 1, Level 2, Level 3) টিম স্ট্যাটাস আপডেট লজিক
+                    // ২. মাল্টি-লেভেল রেফারেল (Level 1, Level 2, Level 3) ট্র্যাক করে আপডেট করা
                     const userSnap = await getDoc(userDocRef);
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
-                        
-                        // Level 1 Referrer
                         const level1Code = userData.referredBy;
-                        if (level1Code) {
-                            const l1Query = query(collection(db, "Users"), where("userId", "==", level1Code));
-                            const l1Snap = await getDocs(l1Query);
 
-                            if (!l1Snap.empty) {
-                                const l1Doc = l1Snap.docs[0];
-                                await updateDoc(l1Doc.ref, {
+                        if (level1Code) {
+                            const l1User = await findUserDocByReferralCode(level1Code);
+                            if (l1User) {
+                                // Level 1 Update
+                                await updateDoc(l1User.ref, {
                                     "teamStats.level1Deposit": increment(amount)
                                 });
 
-                                // Level 2 Referrer
-                                const l1Data = l1Doc.data();
-                                const level2Code = l1Data.referredBy;
+                                const level2Code = l1User.data.referredBy;
                                 if (level2Code) {
-                                    const l2Query = query(collection(db, "Users"), where("userId", "==", level2Code));
-                                    const l2Snap = await getDocs(l2Query);
-
-                                    if (!l2Snap.empty) {
-                                        const l2Doc = l2Snap.docs[0];
-                                        await updateDoc(l2Doc.ref, {
+                                    const l2User = await findUserDocByReferralCode(level2Code);
+                                    if (l2User) {
+                                        // Level 2 Update
+                                        await updateDoc(l2User.ref, {
                                             "teamStats.level2Deposit": increment(amount)
                                         });
 
-                                        // Level 3 Referrer
-                                        const l2Data = l2Doc.data();
-                                        const level3Code = l2Data.referredBy;
+                                        const level3Code = l2User.data.referredBy;
                                         if (level3Code) {
-                                            const l3Query = query(collection(db, "Users"), where("userId", "==", level3Code));
-                                            const l3Snap = await getDocs(l3Query);
-
-                                            if (!l3Snap.empty) {
-                                                const l3Doc = l3Snap.docs[0];
-                                                await updateDoc(l3Doc.ref, {
+                                            const l3User = await findUserDocByReferralCode(level3Code);
+                                            if (l3User) {
+                                                // Level 3 Update
+                                                await updateDoc(l3User.ref, {
                                                     "teamStats.level3Deposit": increment(amount)
                                                 });
                                             }
@@ -392,7 +401,7 @@
                     }
                 }
 
-                showAlert("Deposit request submitted and multi-level team balance updated successfully!");
+                showAlert("Deposit request submitted successfully!");
                 
                 document.getElementById('depositAmount').value = '';
                 document.getElementById('trxIdInput').value = '';
