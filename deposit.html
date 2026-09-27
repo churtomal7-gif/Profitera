@@ -21,23 +21,14 @@
 
         .deposit-container { padding: 16px; max-width: 500px; margin: 0 auto; }
         
-        .notice-card { 
-            background: rgba(0, 255, 135, 0.05); 
-            border: 1px solid rgba(0, 255, 135, 0.2); 
-            border-radius: 14px; 
-            padding: 14px 16px; 
-            margin-bottom: 16px; 
-            font-size: 13px; 
-            color: #d1ebd9; 
-            line-height: 1.8; 
-        }
-        .notice-card strong { color: #00ff87; display: block; margin-bottom: 4px; font-size: 14px; font-family: 'Orbitron', sans-serif; }
-        .notice-card p { margin-bottom: 6px; }
-
         .deposit-card { background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.18); border-radius: 16px; padding: 18px; margin-bottom: 16px; backdrop-filter: blur(10px); }
         .section-label { font-size: 12px; font-weight: 700; color: #799988; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-        .methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 14px; }
+        input { width: 100%; background: rgba(0, 255, 135, 0.05); border: 1px solid rgba(0, 255, 135, 0.2); padding: 12px 14px; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; }
+        input:focus { border-color: #00ff87; }
+
+        .methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
         .method-box { 
             background: rgba(0, 255, 135, 0.03); 
             border: 1.5px solid rgba(0, 255, 135, 0.15); 
@@ -45,24 +36,27 @@
             padding: 12px; 
             text-align: center; 
             cursor: pointer; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.2s;
         }
         .method-box.active { background: rgba(0, 255, 135, 0.12); border-color: #00ff87; box-shadow: 0 0 10px rgba(0, 255, 135, 0.2); }
         .method-box img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; }
         .method-name { font-size: 13px; font-weight: 700; color: #ffffff; }
 
-        .agent-box { background: rgba(2, 9, 5, 0.6); border: 1px dashed rgba(0, 255, 135, 0.4); border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .agent-info span { font-size: 11px; color: #799988; }
-        .agent-info h4 { font-family: 'Orbitron', sans-serif; font-size: 15px; color: #00ff87; margin-top: 2px; }
-        .copy-btn { background: rgba(0, 255, 135, 0.15); border: 1px solid rgba(0, 255, 135, 0.3); color: #00ff87; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .step-box { background: rgba(2, 9, 5, 0.7); border: 1px solid rgba(0, 255, 135, 0.25); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+        .step-title { font-family: 'Orbitron', sans-serif; font-size: 13px; color: #00ff87; margin-bottom: 10px; }
+        
+        .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; }
+        .info-row span { color: #b3ccc2; }
+        .info-val { font-family: 'Orbitron', sans-serif; font-weight: 700; color: #00ff87; }
+        .copy-icon-btn { background: rgba(0, 255, 135, 0.15); border: 1px solid rgba(0, 255, 135, 0.3); color: #00ff87; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 11px; }
 
-        .form-group { margin-bottom: 14px; }
-        input { width: 100%; background: rgba(0, 255, 135, 0.05); border: 1px solid rgba(0, 255, 135, 0.2); padding: 12px 14px; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; }
-        input:focus { border-color: #00ff87; }
+        .warning-tag { background: rgba(255, 165, 2, 0.1); border: 1px dashed rgba(255, 165, 2, 0.3); color: #ffd32a; font-size: 11px; padding: 8px; border-radius: 8px; text-align: center; margin-bottom: 12px; font-weight: 600; }
+        .error-tag { color: #ff4757; font-size: 12px; font-weight: 600; margin-top: 5px; display: none; }
+
+        .preview-img-container { text-align: center; margin: 12px 0; }
+        .preview-img-container img { width: 100%; max-width: 220px; border-radius: 8px; border: 1px solid rgba(0, 255, 135, 0.3); }
+
+        .instruction-text { font-size: 12px; color: #d1eae0; line-height: 1.6; background: rgba(0, 255, 135, 0.04); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 3px solid #00ff87; }
 
         .submit-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 14px; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 6px; transition: 0.3s; }
         .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -91,49 +85,81 @@
 
     <div class="deposit-container">
         
-        <div class="notice-card">
-            <strong><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশিকা:</strong>
-            <p>• সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০। এর কম ডিপোজিট গ্রহণযোগ্য নয়।</p>
-            <p>• প্রথমে উপরের যেকোনো পেমেন্ট অপশন সিলেক্ট করুন।</p>
-            <p>• তারপর যে নম্বর দেওয়া আছে সেই নম্বরে ক্যাশআউট করুন।</p>
-            <p>• এরপর সেই নম্বরে যত টাকা পাঠিয়েছেন এবং ট্রানজেকশন আইডি বসান।</p>
-        </div>
-
         <div class="deposit-card">
-            <span class="section-label">Select Method</span>
-            <div class="methods-grid">
-                <div class="method-box active" id="bkashMethod" onclick="selectMethod('bkash')">
-                    <img src="bkash.png" alt="bKash">
-                    <div class="method-name">bKash</div>
-                </div>
-                <div class="method-box" id="nogodMethod" onclick="selectMethod('nogod')">
-                    <img src="nogod.png" alt="Nogod">
-                    <div class="method-name">Nogod</div>
+            <!-- ১. প্রথমে বিকাশ বা নগদ মেথড সিলেক্ট -->
+            <div class="form-group">
+                <span class="section-label">Select Payment Method</span>
+                <div class="methods-grid">
+                    <div class="method-box" id="bkashMethodBtn" onclick="selectMethod('bkash')">
+                        <img src="bkash.png" alt="bKash">
+                        <div class="method-name">bKash</div>
+                    </div>
+                    <div class="method-box" id="nogodMethodBtn" onclick="selectMethod('nogod')">
+                        <img src="nogod.png" alt="Nagad">
+                        <div class="method-name">Nagad</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="agent-box">
-                <div class="agent-info">
-                    <span id="methodLabel">bKash Agent Number</span>
-                    <h4 id="agentNumberDisplay">Loading...</h4>
-                </div>
-                <button class="copy-btn" onclick="copyNumber()">Copy</button>
-            </div>
-
+            <!-- ২. অ্যামাউন্ট ইনপুট -->
             <div class="form-group">
                 <span class="section-label">Deposit Amount (Minimum ৳600)</span>
-                <input type="number" id="depositAmount" placeholder="Enter amount (Min 600)">
+                <input type="number" id="depositAmount" placeholder="Enter amount (Min 600)" oninput="updateAmountDisplay()">
+                <div class="error-tag" id="amountErrorMsg">৬০০ টাকার নিচে ডিপোজিট করা যাবে না</div>
             </div>
 
-            <div class="form-group">
-                <span class="section-label">Transaction ID (TrxID)</span>
-                <input type="text" id="trxIdInput" placeholder="Enter TrxID">
+            <!-- ৩. চ্যানেল সিলেক্ট অপশন -->
+            <div class="form-group" id="channelSection" style="display:none;">
+                <span class="section-label">Select Channel</span>
+                <div class="methods-grid">
+                    <div class="method-box" id="ch1Btn" onclick="selectChannel('Channel 1')">
+                        <div class="method-name">CHANNEL 1</div>
+                    </div>
+                    <div class="method-box" id="ch2Btn" onclick="selectChannel('Channel 2')">
+                        <div class="method-name">CHANNEL 2</div>
+                    </div>
+                </div>
             </div>
 
-            <button class="submit-btn" id="submitBtn" onclick="submitDeposit()">Submit Deposit</button>
+            <!-- ৪. পপআপ বা ডিটেইলস বক্স -->
+            <div id="detailsBoxSection" style="display:none;">
+                <div class="step-box">
+                    <div class="step-title">ধাপ ১. পেমেন্ট নির্দেশনা</div>
+                    <div class="warning-tag" id="warningTextLabel">এই নাম্বারে শুধুমাত্র সেন্ড মানি গ্রহণ করা হয়</div>
+                    
+                    <div class="info-row">
+                        <span>এজেন্ট নাম্বার:</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="info-val" id="displayAgentNum">--</span>
+                            <button class="copy-icon-btn" onclick="copyNumber()"><i class="fa-solid fa-copy"></i> Copy</button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span>পরিমাণ:</span>
+                        <span class="info-val" id="displayAmountVal">৳0</span>
+                    </div>
+
+                    <div class="preview-img-container">
+                        <img id="dynamicInstructionImg" src="scs1.png" alt="Payment Guide" onerror="this.style.display='none'">
+                    </div>
+
+                    <div class="instruction-text" id="instructionTextDetails">
+                        প্রথমে আপনার বিকাশ অ্যাপে প্রবেশ করে 'সেন্ড মানি' অপশন সিলেক্ট করুন। এরপর উপর থেকে আমাদের প্রদেয় নাম্বারটি কপি করে সেখানে পেস্ট করুন এবং আপনার নির্ধারিত ডিপোজিট পরিমাণ অ্যামাউন্ট বসিয়ে পেমেন্ট সম্পন্ন করুন। পেমেন্ট সফল হওয়ার পর যে ট্রানজেকশন আইডি (TrxID) পাবেন, তা নিচের বক্সে লিখে সাবমিট করুন। কিছুক্ষণের মধ্যে অ্যাডমিন আপনার ব্যালেন্সে টাকা যুক্ত করে দেবেন।
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <div class="step-title">ধাপ ২. ট্রানজেকশন আইডি দিন</div>
+                    <span style="font-size: 12px; color: #b3ccc2; display: block; margin-bottom: 8px;">রিচার্জ সম্পূর্ণ করতে অনুগ্রহ করে সঠিক লেনদেন আইডি লিখুন</span>
+                    <input type="text" id="trxIdInput" placeholder="এখানে TrxID লিখুন">
+                </div>
+
+                <button class="submit-btn" id="submitBtn" onclick="submitDeposit()">Submit Deposit</button>
+            </div>
         </div>
 
-        <!-- Deposit History Section -->
+        <!-- History -->
         <div class="deposit-card">
             <div class="history-title">My Deposit History</div>
             <div class="table-responsive">
@@ -180,10 +206,12 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let selectedPaymentMethod = "bkash";
-        let agentNumbersData = { bkash: "", nogod: "" };
+        let selectedPaymentMethod = "";
+        let selectedChannel = "";
+        // অ্যাডমিন প্যানেলের Settings/paymentNumbers থেকে চারটা ফিল্ড রিসিভ করবে
+        let agentNumbersData = { bkash: "", bkashCh2: "", nogod: "", nogodCh2: "" };
         let currentUserId = "";
-        let currentUserDocId = ""; 
+        let currentUserEmail = "";
 
         window.showAlert = function(msg) {
             document.getElementById('customAlertMsg').innerText = msg;
@@ -195,25 +223,84 @@
 
         window.selectMethod = function(method) {
             selectedPaymentMethod = method;
-            document.getElementById('bkashMethod').classList.remove('active');
-            document.getElementById('nogodMethod').classList.remove('active');
-            
-            if(method === 'bkash') {
-                document.getElementById('bkashMethod').classList.add('active');
-                document.getElementById('methodLabel').innerText = "bKash Agent Number";
-                document.getElementById('agentNumberDisplay').innerText = agentNumbersData.bkash || "Not Set";
+            document.getElementById('bkashMethodBtn').classList.remove('active');
+            document.getElementById('nogodMethodBtn').classList.remove('active');
+            document.getElementById(method + 'MethodBtn').classList.add('active');
+
+            if (method === 'bkash') {
+                document.getElementById('warningTextLabel').innerText = "এই bKash নাম্বারে শুধুমাত্র সেন্ড মানি গ্রহণ করা হয়";
+                document.getElementById('dynamicInstructionImg').src = "scs1.png";
+                document.getElementById('instructionTextDetails').innerText = "প্রথমে আপনার বিকাশ অ্যাপে প্রবেশ করে 'সেন্ড মানি' অপশন সিলেক্ট করুন। এরপর উপর থেকে আমাদের প্রদেয় নাম্বারটি কপি করে সেখানে পেস্ট করুন এবং আপনার নির্ধারিত ডিপোজিট পরিমাণ অ্যামাউন্ট বসিয়ে পেমেন্ট সম্পন্ন করুন। পেমেন্ট সফল হওয়ার পর যে ট্রানজেকশন আইডি (TrxID) পাবেন, তা নিচের বক্সে লিখে সাবমিট করুন। কিছুক্ষণের মধ্যে অ্যাডমিন আপনার ব্যালেন্সে টাকা যুক্ত করে দেবেন।";
             } else {
-                document.getElementById('nogodMethod').classList.add('active');
-                document.getElementById('methodLabel').innerText = "Nogod Agent Number";
-                document.getElementById('agentNumberDisplay').innerText = agentNumbersData.nogod || "Not Set";
+                document.getElementById('warningTextLabel').innerText = "এই Nagad নাম্বারে শুধুমাত্র সেন্ড মানি গ্রহণ করা হয়";
+                document.getElementById('dynamicInstructionImg').src = "scs2.png";
+                document.getElementById('instructionTextDetails').innerText = "প্রথমে আপনার নগদ অ্যাপে প্রবেশ করে 'সেন্ড মানি' অপশন সিলেক্ট করুন। এরপর উপর থেকে আমাদের প্রদেয় নাম্বারটি কপি করে সেখানে পেস্ট করুন এবং আপনার নির্ধারিত ডিপোজিট পরিমাণ অ্যামাউন্ট বসিয়ে পেমেন্ট সম্পন্ন করুন। পেমেন্ট সফল হওয়ার পর যে ট্রানজেকশন আইডি (TrxID) পাবেন, তা নিচের বক্সে লিখে সাবমিট করুন। কিছুক্ষণের মধ্যে অ্যাডমিন আপনার ব্যালেন্সে টাকা যুক্ত করে দেবেন।";
+            }
+
+            checkAndShowChannel();
+            if(selectedChannel) updateDisplayedNumber();
+        }
+
+        window.updateAmountDisplay = function() {
+            const amt = document.getElementById('depositAmount').value.trim();
+            const errorTag = document.getElementById('amountErrorMsg');
+            
+            if (amt !== "" && Number(amt) < 600) {
+                errorTag.style.display = 'block';
+            } else {
+                errorTag.style.display = 'none';
+            }
+
+            checkAndShowChannel();
+            document.getElementById('displayAmountVal').innerText = amt ? `৳${amt}` : "৳0";
+        }
+
+        function checkAndShowChannel() {
+            const amt = Number(document.getElementById('depositAmount').value.trim());
+            const channelSec = document.getElementById('channelSection');
+
+            if (selectedPaymentMethod && amt >= 600) {
+                channelSec.style.display = 'block';
+            } else {
+                channelSec.style.display = 'none';
+                document.getElementById('detailsBoxSection').style.display = 'none';
             }
         }
 
+        window.selectChannel = function(channel) {
+            selectedChannel = channel;
+            document.getElementById('ch1Btn').classList.remove('active');
+            document.getElementById('ch2Btn').classList.remove('active');
+            document.getElementById(channel === 'Channel 1' ? 'ch1Btn' : 'ch2Btn').classList.add('active');
+            
+            document.getElementById('detailsBoxSection').style.display = 'block';
+            updateDisplayedNumber();
+        }
+
+        // অ্যাডমিন প্যানেল থেকে আসা Channel 1 এবং Channel 2 এর নাম্বার আলাদা করে হ্যান্ডেল করা
+        function updateDisplayedNumber() {
+            let num = "Not Set";
+            if (selectedPaymentMethod === 'bkash') {
+                if (selectedChannel === 'Channel 1') {
+                    num = agentNumbersData.bkash || "Not Set";
+                } else if (selectedChannel === 'Channel 2') {
+                    num = agentNumbersData.bkashCh2 || agentNumbersData.bkash || "Not Set";
+                }
+            } else if (selectedPaymentMethod === 'nogod') {
+                if (selectedChannel === 'Channel 1') {
+                    num = agentNumbersData.nogod || "Not Set";
+                } else if (selectedChannel === 'Channel 2') {
+                    num = agentNumbersData.nogodCh2 || agentNumbersData.nogod || "Not Set";
+                }
+            }
+            document.getElementById('displayAgentNum').innerText = num;
+        }
+
         window.copyNumber = function() {
-            const numText = document.getElementById('agentNumberDisplay').innerText;
-            if(numText && numText !== "Not Set") {
+            const numText = document.getElementById('displayAgentNum').innerText;
+            if (numText && numText !== "Not Set") {
                 navigator.clipboard.writeText(numText);
-                showAlert("Number copied!");
+                showAlert("Number copied successfully!");
             }
         }
 
@@ -222,73 +309,37 @@
                 const docSnap = await getDoc(doc(db, "Settings", "paymentNumbers"));
                 if (docSnap.exists()) {
                     agentNumbersData = docSnap.data();
-                    selectMethod('bkash');
                 }
             } catch (e) { console.error(e); }
         }
 
-        async function resolveUserData(phoneOrId) {
-            if (!phoneOrId) return null;
-            let cleanPhone = phoneOrId.toString().trim();
-            if(!cleanPhone.startsWith("+") && cleanPhone.length === 11) {
-                cleanPhone = "+88" + cleanPhone;
-            }
-
-            try {
-                const docRef = doc(db, "Users", cleanPhone);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    currentUserDocId = cleanPhone;
-                    return docSnap.data().userId || cleanPhone;
-                }
-
-                const q = query(collection(db, "Users"), where("phoneNumber", "==", cleanPhone));
-                const querySnap = await getDocs(q);
-                if (!querySnap.empty) {
-                    currentUserDocId = querySnap.docs[0].id;
-                    return querySnap.docs[0].data().userId;
-                }
-
-                const docRef2 = doc(db, "Users", phoneOrId);
-                const docSnap2 = await getDoc(docRef2);
-                if (docSnap2.exists()) {
-                    currentUserDocId = phoneOrId;
-                    return docSnap2.data().userId || phoneOrId;
-                }
-            } catch (e) {
-                console.error("Error resolving user:", e);
-            }
-            return phoneOrId;
-        }
-
-        async function initUserSession() {
-            let rawIdentifier = localStorage.getItem("activeUserPhone") || 
-                                localStorage.getItem("userPhone") || 
-                                localStorage.getItem("phone") || 
-                                localStorage.getItem("activeUserUid") || 
-                                localStorage.getItem("userId") || 
-                                sessionStorage.getItem("activeUserPhone") || 
-                                sessionStorage.getItem("phone");
-
-            if (!rawIdentifier) {
-                const user = auth.currentUser;
-                if (user) {
-                    rawIdentifier = user.phoneNumber || user.uid || user.email;
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                currentUserEmail = user.email || user.phoneNumber || user.uid;
+            } 
+            if (!currentUserId) {
+                const storedPhone = localStorage.getItem("activeUserPhone") || sessionStorage.getItem("activeUserPhone");
+                if (storedPhone) {
+                    currentUserId = storedPhone;
+                    currentUserEmail = storedPhone;
+                } else {
+                    const storedUid = localStorage.getItem("activeUserUid") || sessionStorage.getItem("activeUserUid");
+                    if (storedUid) {
+                        currentUserId = storedUid;
+                        currentUserEmail = storedUid;
+                    }
                 }
             }
 
-            if (!rawIdentifier) {
+            if (!currentUserId) {
                 window.location.href = "login.html";
                 return;
             }
 
-            currentUserId = await resolveUserData(rawIdentifier);
             fetchAgentNumbers();
             loadUserHistory(currentUserId);
-        }
-
-        onAuthStateChanged(auth, () => { initUserSession(); });
-        initUserSession();
+        });
 
         window.submitDeposit = async function() {
             const amountInput = document.getElementById('depositAmount').value.trim();
@@ -296,16 +347,20 @@
             const amount = Number(amountInput);
             const submitBtn = document.getElementById('submitBtn');
 
-            if (!currentUserId) {
-                showAlert("Session expired. Please log in again.");
+            if (!selectedPaymentMethod) {
+                showAlert("দয়া করে পেমেন্ট মাধ্যম (বিকাশ বা নগদ) সিলেক্ট করুন।");
                 return;
             }
             if (!amountInput || isNaN(amount) || amount < 600) {
                 showAlert("সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০ হতে হবে।");
                 return;
             }
+            if (!selectedChannel) {
+                showAlert("দয়া করে চ্যানেল সিলেক্ট করুন।");
+                return;
+            }
             if (!trxId) {
-                showAlert("Enter the TrxID.");
+                showAlert("দয়া করে ট্রানজেকশন আইডি (TrxID) দিন।");
                 return;
             }
 
@@ -317,30 +372,32 @@
                 const checkTrxSnap = await getDocs(checkTrxQuery);
 
                 if (!checkTrxSnap.empty) {
-                    showAlert("This Transaction ID (TrxID) has already been used!");
+                    showAlert("এই ট্রানজেকশন আইডি (TrxID) ইতিপূর্বে ব্যবহার করা হয়েছে!");
                     submitBtn.disabled = false;
                     submitBtn.innerText = "Submit Deposit";
                     return;
                 }
 
-                // শুধুমাত্র ডিপোজিট রিকোয়েস্ট 'Pending' স্ট্যাটাসে সেভ হবে। 
-                // ব্যালেন্স বা রেফারেল লেভেলে কোনো টাকা যোগ হবে না যতক্ষণ না অ্যাডমিন অ্যাপ্রুভ করে।
+                const activeScreenshot = selectedPaymentMethod === 'bkash' ? "scs1.png" : "scs2.png";
+
                 const depositData = {
                     userId: currentUserId,
-                    userDocId: currentUserDocId, // অ্যাডমিন প্যানেল থেকে অ্যাপ্রুভ করার সময় এটি কাজে লাগবে
+                    email: currentUserEmail,
                     amount: amount,
-                    method: selectedPaymentMethod.toUpperCase(),
+                    method: `${selectedPaymentMethod.toUpperCase()} (${selectedChannel})`,
                     trxId: trxId,
                     status: "Pending",
+                    screenshotName: activeScreenshot,
                     timestamp: serverTimestamp()
                 };
 
                 await addDoc(collection(db, "Deposits"), depositData);
-
-                showAlert("Deposit request submitted successfully! Please wait for admin approval.");
+                showAlert("ডিপোজিট রিকোয়েস্ট সফলভাবে সাবমিট হয়েছে! Admin approve করলে ব্যালেন্স যোগ হবে।");
                 
                 document.getElementById('depositAmount').value = '';
                 document.getElementById('trxIdInput').value = '';
+                document.getElementById('channelSection').style.display = 'none';
+                document.getElementById('detailsBoxSection').style.display = 'none';
                 loadUserHistory(currentUserId);
             } catch (e) {
                 showAlert("Error: " + e.message);
