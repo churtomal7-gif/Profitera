@@ -327,23 +327,151 @@
         </a>
     </div>
 
-    <script>
-        function checkTask(button) {
+    <!-- Firebase SDKs & Task Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserUid = null;
+        let userLevel1Deposit = 0;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                await fetchUserTaskData(currentUserUid);
+            } else {
+                const activeUid = sessionStorage.getItem("activeUserUid") || localStorage.getItem("activeUserUid");
+                const activePhone = sessionStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserPhone");
+                if (activeUid || activePhone) {
+                    currentUserUid = activeUid || activePhone;
+                    await fetchUserTaskData(currentUserUid);
+                } else {
+                    window.location.href = "login.html";
+                }
+            }
+        });
+
+        async function fetchUserTaskData(identifier) {
+            try {
+                const docRef = doc(db, "Users", identifier);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    
+                    // Level 1 Deposit fetch kora (refer.html er sathe connected)
+                    if (data.teamStats && data.teamStats.level1Deposit) {
+                        userLevel1Deposit = parseFloat(data.teamStats.level1Deposit) || 0;
+                    }
+
+                    // Completed tasks list check kora
+                    const completedTasks = data.completedTasks || [];
+
+                    updateTaskUI(userLevel1Deposit, completedTasks);
+                }
+            } catch (error) {
+                console.error("Error fetching task data:", error);
+            }
+        }
+
+        function updateTaskUI(depositAmount, completedTasks) {
+            const taskCards = document.querySelectorAll('.task-card');
+            
+            const targetAmounts = [3000, 8000, 25000, 80000, 250000, 700000, 1500000];
+            const rewardAmounts = [200, 600, 2000, 7000, 25000, 80000, 200000];
+
+            taskCards.forEach((card, index) => {
+                const target = targetAmounts[index];
+                const progText = card.querySelector('.task-prog-text');
+                const statusBadge = card.querySelector('.task-status-badge');
+                const rewardBtn = card.querySelector('.task-reward-btn');
+
+                let formattedDeposit = depositAmount > target ? target : depositAmount;
+                progText.innerText = `${formattedDeposit.toLocaleString()} / ${target.toLocaleString()}`;
+
+                if (completedTasks.includes(index)) {
+                    card.setAttribute('data-completed', 'claimed');
+                    statusBadge.innerText = "সংগ্রহ করা হয়েছে";
+                    statusBadge.style.color = "#00ff87";
+                    rewardBtn.innerText = "Claimed";
+                    rewardBtn.style.opacity = "0.6";
+                    rewardBtn.style.cursor = "not-allowed";
+                } else if (depositAmount >= target) {
+                    card.setAttribute('data-completed', 'true');
+                    statusBadge.innerText = "সম্পন্ন";
+                    statusBadge.style.color = "#00ff87";
+                    rewardBtn.innerText = `+৳${rewardAmounts[index].toLocaleString()}`;
+                } else {
+                    card.setAttribute('data-completed', 'false');
+                    statusBadge.innerText = "অসমাপ্ত";
+                    statusBadge.style.color = "#799988";
+                }
+            });
+        }
+
+        window.checkTask = async function(button) {
             const card = button.closest('.task-card');
-            const isCompleted = card.getAttribute('data-completed') === 'true';
+            const taskCards = Array.from(document.querySelectorAll('.task-card'));
+            const taskIndex = taskCards.indexOf(card);
+            
+            const cardStatus = card.getAttribute('data-completed');
             const modal = document.getElementById('customModal');
             const modalMessage = document.getElementById('modalMessage');
 
-            if (!isCompleted) {
-                modalMessage.innerHTML = "You haven’t completed the task!<br><span style='font-size: 13px; color: #799988;'>আপনি কাজটি সম্পূর্ণ করেননি!</span>";
+            if (cardStatus === 'claimed') {
+                modalMessage.innerHTML = "You have already collected this reward!<br><span style='font-size: 13px; color: #799988;'>আপনি ইতিমধ্যে এই পুরস্কারটি সংগ্রহ করেছেন!</span>";
                 modal.style.display = 'flex';
-            } else {
-                modalMessage.innerHTML = "Congratulations! Reward collected successfully.<br><span style='font-size: 13px; color: #00ff87;'>অভিনন্দন! সফলভাবে পুরস্কার সংগ্রহ করা হয়েছে।</span>";
+                return;
+            }
+
+            if (cardStatus === 'false') {
+                modalMessage.innerHTML = "You haven’t completed the task yet!<br><span style='font-size: 13px; color: #799988;'>আপনার লেভেল ১ ডিপোজিট টার্গেট এখনো পূর্ণ হয়নি!</span>";
                 modal.style.display = 'flex';
+            } else if (cardStatus === 'true') {
+                const rewardAmounts = [200, 600, 2000, 7000, 25000, 80000, 200000];
+                const rewardVal = rewardAmounts[taskIndex];
+
+                try {
+                    const userRef = doc(db, "Users", currentUserUid);
+                    const docSnap = await getDoc(userRef);
+                    let existingCompleted = docSnap.data().completedTasks || [];
+                    
+                    if (!existingCompleted.includes(taskIndex)) {
+                        existingCompleted.push(taskIndex);
+                        await updateDoc(userRef, {
+                            balance: increment(rewardVal),
+                            completedTasks: existingCompleted
+                        });
+                    }
+
+                    modalMessage.innerHTML = `Congratulations! ৳${rewardVal} added successfully.<br><span style='font-size: 13px; color: #00ff87;'>অভিনন্দন! সফলভাবে পুরস্কার সংগ্রহ করা হয়েছে।</span>`;
+                    modal.style.display = 'flex';
+
+                    // Refresh UI
+                    fetchUserTaskData(currentUserUid);
+
+                } catch (error) {
+                    console.error("Error claiming reward:", error);
+                    modalMessage.innerHTML = "Something went wrong! Try again.<br><span style='font-size: 13px; color: #ff4d4d;'>সমস্যা হয়েছে! আবার চেষ্টা করুন।</span>";
+                    modal.style.display = 'flex';
+                }
             }
         }
         
-        function closeModal() {
+        window.closeModal = function() {
             document.getElementById('customModal').style.display = 'none';
         }
     </script>
