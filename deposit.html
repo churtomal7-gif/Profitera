@@ -165,7 +165,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -182,8 +182,8 @@
 
         let selectedPaymentMethod = "bkash";
         let agentNumbersData = { bkash: "", nogod: "" };
-        let currentUserId = "";        // ফায়ারবেজের কাস্টম ইউজার আইডি (যেমন: HJHHH80888)
-        let currentUserPhone = "";     // ইউজারের ফোন নম্বর (যেমন: +880888)
+        let currentUserId = "";
+        let currentUserDocId = ""; // ইউজারের মূল ফায়ারবেজ ডকুমেন্ট আইডি বা ফোন নম্বর
 
         window.showAlert = function(msg) {
             document.getElementById('customAlertMsg').innerText = msg;
@@ -227,23 +227,36 @@
             } catch (e) { console.error(e); }
         }
 
-        // ইউজারের সঠিক কাস্টম আইডি (যেমন HJHHH80888) খুঁজে বের করা
         async function resolveUserData(phoneOrId) {
             if (!phoneOrId) return null;
+            let cleanPhone = phoneOrId.toString().trim();
+            if(!cleanPhone.startsWith("+") && cleanPhone.length === 11) {
+                cleanPhone = "+88" + cleanPhone;
+            }
+
             try {
-                // ১. সরাসরি Users কালেকশনে ডকুমেন্ট আইডি দিয়ে চেক করা (যেমন ফোন নম্বর দিয়ে ডকুমেন্ট খোলা থাকলে)
-                const docRef = doc(db, "Users", phoneOrId);
+                // ১. সরাসরি Users কালেকশনে ফোন নম্বর দিয়ে ডকুমেন্ট চেক করা
+                const docRef = doc(db, "Users", cleanPhone);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    return data.userId || phoneOrId;
+                    currentUserDocId = cleanPhone;
+                    return docSnap.data().userId || cleanPhone;
                 }
 
-                // ২. যদি ডকুমেন্ট আইডি ফোন নম্বর না হয়ে কাস্টম আইডি হয়, তবে phoneNumber ফিল্ড দিয়ে খোঁজা
-                const q = query(collection(db, "Users"), where("phoneNumber", "==", phoneOrId));
+                // ২. phoneNumber ফিল্ড দিয়ে কুয়েরি করা
+                const q = query(collection(db, "Users"), where("phoneNumber", "==", cleanPhone));
                 const querySnap = await getDocs(q);
                 if (!querySnap.empty) {
+                    currentUserDocId = querySnap.docs[0].id;
                     return querySnap.docs[0].data().userId;
+                }
+
+                // ৩. সরাসরি userId দিয়ে ডকুমেন্ট চেক করা
+                const docRef2 = doc(db, "Users", phoneOrId);
+                const docSnap2 = await getDoc(docRef2);
+                if (docSnap2.exists()) {
+                    currentUserDocId = phoneOrId;
+                    return docSnap2.data().userId || phoneOrId;
                 }
             } catch (e) {
                 console.error("Error resolving user:", e);
@@ -251,16 +264,20 @@
             return phoneOrId;
         }
 
-        onAuthStateChanged(auth, async (user) => {
+        async function initUserSession() {
             let rawIdentifier = localStorage.getItem("activeUserPhone") || 
                                 localStorage.getItem("userPhone") || 
+                                localStorage.getItem("phone") || 
                                 localStorage.getItem("activeUserUid") || 
                                 localStorage.getItem("userId") || 
                                 sessionStorage.getItem("activeUserPhone") || 
-                                sessionStorage.getItem("userId");
+                                sessionStorage.getItem("phone");
 
-            if (!rawIdentifier && user) {
-                rawIdentifier = user.phoneNumber || user.uid || user.email;
+            if (!rawIdentifier) {
+                const user = auth.currentUser;
+                if (user) {
+                    rawIdentifier = user.phoneNumber || user.uid || user.email;
+                }
             }
 
             if (!rawIdentifier) {
@@ -268,13 +285,43 @@
                 return;
             }
 
-            currentUserPhone = rawIdentifier;
-            // ডেটাবেস থেকে ইউজারের আসল custom userId (যেমন HJHHH80888) বের করে নেওয়া
             currentUserId = await resolveUserData(rawIdentifier);
-
             fetchAgentNumbers();
             loadUserHistory(currentUserId);
-        });
+        }
+
+        onAuthStateChanged(auth, () => { initUserSession(); });
+        initUserSession();
+
+        // রেফারারের লেভেল ১ ডিপোজিট স্ট্যাটাস আপডেট করার ফাংশন
+        async function updateReferrerLevel1(userDocId, depositAmount) {
+            try {
+                if (!userDocId) return;
+                const userDocRef = doc(db, "Users", userDocId);
+                const userSnap = await getDoc(userDocRef);
+                
+                if (userSnap.exists()) {
+                    const userData = userSnap.data();
+                    const referredByCode = userData.referredBy; // যার লিংকে একাউন্ট খোলা হয়েছে (যেমন PE-5096 বা রেফারেল কোড)
+
+                    if (referredByCode) {
+                        // রেফারার কোড দিয়ে আপলাইন বা রেফারার ইউজারকে খোঁজা
+                        const refQuery = query(collection(db, "Users"), where("userId", "==", referredByCode));
+                        const refSnap = await getDocs(refQuery);
+
+                        if (!refSnap.empty) {
+                            const referrerDocRef = refSnap.docs[0].ref;
+                            // আপলাইনের teamStats.level1Deposit বা লেভেল ১ কাউন্ট আপডেট করা
+                            await updateDoc(referrerDocRef, {
+                                "teamStats.level1Deposit": increment(depositAmount)
+                            });
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Error updating referrer stats:", err);
+            }
+        }
 
         window.submitDeposit = async function() {
             const amountInput = document.getElementById('depositAmount').value.trim();
@@ -310,8 +357,7 @@
                 }
 
                 const depositData = {
-                    userId: currentUserId, // ডেটাবেজের সঠিক কাস্টম ইউজার আইডি সেভ হবে
-                    phone: currentUserPhone,
+                    userId: currentUserId,
                     amount: amount,
                     method: selectedPaymentMethod.toUpperCase(),
                     trxId: trxId,
@@ -320,6 +366,12 @@
                 };
 
                 await addDoc(collection(db, "Deposits"), depositData);
+
+                // ডিপোজিট সফলভাবে সাবমিট হওয়ার সাথে সাথে রেফারারের লেভেল ১ কাউন্টে যোগ করা
+                if (currentUserDocId) {
+                    await updateReferrerLevel1(currentUserDocId, amount);
+                }
+
                 showAlert("Deposit request submitted successfully!");
                 
                 document.getElementById('depositAmount').value = '';
@@ -336,7 +388,6 @@
         async function loadUserHistory(userId) {
             const tbody = document.getElementById('userDepositHistory');
             try {
-                // কাস্টম userId দিয়ে ডিপোজিট কালেকশন কুয়েরি করা হচ্ছে
                 const q = query(collection(db, "Deposits"), where("userId", "==", userId));
                 const querySnapshot = await getDocs(q);
                 
