@@ -180,7 +180,7 @@
           const docSnap = await getDoc(userDocRef);
 
           if (!docSnap.exists()) {
-              showCustomAlert("Ei nombore kono account nei!");
+              showCustomAlert("এই নম্বরে কোনো অ্যাকাউন্ট নেই!");
               submitBtn.innerText = "Login";
               submitBtn.disabled = false;
               return;
@@ -189,13 +189,13 @@
           const userData = docSnap.data();
 
           if (userData.password !== password) {
-              showCustomAlert("Vul password! Abar chesta korun.");
+              showCustomAlert("ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।");
               submitBtn.innerText = "Login";
               submitBtn.disabled = false;
               return;
           }
 
-          showCustomAlert("Login shofol hoyeche!");
+          showCustomAlert("লগইন সফল হয়েছে!");
           
           // Ekhane sessionStorage-er bodole localStorage use kora holo jate permanent thake
           localStorage.setItem("activeUserPhone", phoneFormat);
