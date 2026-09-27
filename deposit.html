@@ -165,7 +165,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -298,7 +298,6 @@
                 if (!snap.empty) {
                     return { ref: snap.docs[0].ref, data: snap.docs[0].data() };
                 }
-                // Fallback direct doc id check
                 const directRef = doc(db, "Users", refCode);
                 const directSnap = await getDoc(directRef);
                 if (directSnap.exists()) {
@@ -354,14 +353,14 @@
 
                 await addDoc(collection(db, "Deposits"), depositData);
 
-                // ১. ইউজারের নিজের ব্যালেন্স আপডেট করা
+                // ১. ইউজারের নিজের ব্যালেন্স আপডেট
                 if (currentUserDocId) {
                     const userDocRef = doc(db, "Users", currentUserDocId);
                     await updateDoc(userDocRef, {
                         balance: increment(amount)
                     });
 
-                    // ২. মাল্টি-লেভেল রেফারেল (Level 1, Level 2, Level 3) ট্র্যাক করে আপডেট করা
+                    // ২. মাল্টি-লেভেল (L1, L2, L3) আপডেট সেইফ লজিক
                     const userSnap = await getDoc(userDocRef);
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
@@ -370,28 +369,28 @@
                         if (level1Code) {
                             const l1User = await findUserDocByReferralCode(level1Code);
                             if (l1User) {
-                                // Level 1 Update
-                                await updateDoc(l1User.ref, {
-                                    "teamStats.level1Deposit": increment(amount)
-                                });
+                                // Level 1 Update (Safe with setDoc merge)
+                                await setDoc(l1User.ref, {
+                                    teamStats: { level1Deposit: increment(amount) }
+                                }, { merge: true });
 
                                 const level2Code = l1User.data.referredBy;
                                 if (level2Code) {
                                     const l2User = await findUserDocByReferralCode(level2Code);
                                     if (l2User) {
                                         // Level 2 Update
-                                        await updateDoc(l2User.ref, {
-                                            "teamStats.level2Deposit": increment(amount)
-                                        });
+                                        await setDoc(l2User.ref, {
+                                            teamStats: { level2Deposit: increment(amount) }
+                                        }, { merge: true });
 
                                         const level3Code = l2User.data.referredBy;
                                         if (level3Code) {
                                             const l3User = await findUserDocByReferralCode(level3Code);
                                             if (l3User) {
                                                 // Level 3 Update
-                                                await updateDoc(l3User.ref, {
-                                                    "teamStats.level3Deposit": increment(amount)
-                                                });
+                                                await setDoc(l3User.ref, {
+                                                    teamStats: { level3Deposit: increment(amount) }
+                                                }, { merge: true });
                                             }
                                         }
                                     }
