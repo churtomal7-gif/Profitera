@@ -182,8 +182,8 @@
 
         let selectedPaymentMethod = "bkash";
         let agentNumbersData = { bkash: "", nogod: "" };
-        let currentUserId = "";
-        let currentUserEmail = "";
+        let currentUserId = "";        // ফায়ারবেজের কাস্টম ইউজার আইডি (যেমন: HJHHH80888)
+        let currentUserPhone = "";     // ইউজারের ফোন নম্বর (যেমন: +880888)
 
         window.showAlert = function(msg) {
             document.getElementById('customAlertMsg').innerText = msg;
@@ -227,30 +227,50 @@
             } catch (e) { console.error(e); }
         }
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUserId = user.uid;
-                currentUserEmail = user.email || user.phoneNumber || user.uid;
-            } 
-            
-            if (!currentUserId || currentUserId === user?.uid) {
-                const storedPhone = localStorage.getItem("activeUserPhone") || sessionStorage.getItem("activeUserPhone");
-                if (storedPhone) {
-                    currentUserId = storedPhone;
-                    currentUserEmail = storedPhone;
-                } else {
-                    const storedUid = localStorage.getItem("activeUserUid") || sessionStorage.getItem("activeUserUid");
-                    if (storedUid) {
-                        currentUserId = storedUid;
-                        currentUserEmail = storedUid;
-                    }
+        // ইউজারের সঠিক কাস্টম আইডি (যেমন HJHHH80888) খুঁজে বের করা
+        async function resolveUserData(phoneOrId) {
+            if (!phoneOrId) return null;
+            try {
+                // ১. সরাসরি Users কালেকশনে ডকুমেন্ট আইডি দিয়ে চেক করা (যেমন ফোন নম্বর দিয়ে ডকুমেন্ট খোলা থাকলে)
+                const docRef = doc(db, "Users", phoneOrId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    return data.userId || phoneOrId;
                 }
+
+                // ২. যদি ডকুমেন্ট আইডি ফোন নম্বর না হয়ে কাস্টম আইডি হয়, তবে phoneNumber ফিল্ড দিয়ে খোঁজা
+                const q = query(collection(db, "Users"), where("phoneNumber", "==", phoneOrId));
+                const querySnap = await getDocs(q);
+                if (!querySnap.empty) {
+                    return querySnap.docs[0].data().userId;
+                }
+            } catch (e) {
+                console.error("Error resolving user:", e);
+            }
+            return phoneOrId;
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            let rawIdentifier = localStorage.getItem("activeUserPhone") || 
+                                localStorage.getItem("userPhone") || 
+                                localStorage.getItem("activeUserUid") || 
+                                localStorage.getItem("userId") || 
+                                sessionStorage.getItem("activeUserPhone") || 
+                                sessionStorage.getItem("userId");
+
+            if (!rawIdentifier && user) {
+                rawIdentifier = user.phoneNumber || user.uid || user.email;
             }
 
-            if (!currentUserId) {
+            if (!rawIdentifier) {
                 window.location.href = "login.html";
                 return;
             }
+
+            currentUserPhone = rawIdentifier;
+            // ডেটাবেস থেকে ইউজারের আসল custom userId (যেমন HJHHH80888) বের করে নেওয়া
+            currentUserId = await resolveUserData(rawIdentifier);
 
             fetchAgentNumbers();
             loadUserHistory(currentUserId);
@@ -290,8 +310,8 @@
                 }
 
                 const depositData = {
-                    userId: currentUserId,
-                    email: currentUserEmail,
+                    userId: currentUserId, // ডেটাবেজের সঠিক কাস্টম ইউজার আইডি সেভ হবে
+                    phone: currentUserPhone,
                     amount: amount,
                     method: selectedPaymentMethod.toUpperCase(),
                     trxId: trxId,
@@ -316,6 +336,7 @@
         async function loadUserHistory(userId) {
             const tbody = document.getElementById('userDepositHistory');
             try {
+                // কাস্টম userId দিয়ে ডিপোজিট কালেকশন কুয়েরি করা হচ্ছে
                 const q = query(collection(db, "Deposits"), where("userId", "==", userId));
                 const querySnapshot = await getDocs(q);
                 
