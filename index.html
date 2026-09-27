@@ -171,7 +171,7 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Custom Alert Function (Replaces gray browser alert)
+  // Custom Alert Function
   function showCustomAlert(message) {
       const alertBox = document.getElementById('customAlert');
       document.getElementById('alertText').innerText = message;
@@ -189,7 +189,7 @@
       document.getElementById('referral').readOnly = true;
   }
 
-  // Handle Form Submit (Check duplicate phone number & use custom popup)
+  // Handle Form Submit
   document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -203,7 +203,6 @@
       const referral = document.getElementById('referral').value;
 
       try {
-          // Check if phone number already exists in Firestore
           const userDocRef = doc(db, "Users", phone);
           const docSnap = await getDoc(userDocRef);
 
@@ -214,16 +213,15 @@
               return;
           }
 
-          // Unique User ID generate
           const customUserId = "PE-" + Math.floor(1000 + Math.random() * 9000);
 
-          // Save user to Firestore
+          // Save user to Firestore with 100 balance auto added
           await setDoc(userDocRef, {
               fullName: name,
               phoneNumber: phone,
               password: password,
               userId: customUserId,
-              balance: 0.00,
+              balance: 100.00, // Balance updated to 100
               referralCode: referral || "",
               createdAt: new Date(),
               authProvider: "Phone"
@@ -239,7 +237,7 @@
   });
 
   // Handle Google Login
-  document.getElementById('googleBtn').button = document.getElementById('googleBtn').addEventListener('click', async () => {
+  document.getElementById('googleBtn').addEventListener('click', async () => {
       const provider = new GoogleAuthProvider();
       try {
           const result = await signInWithPopup(auth, provider);
@@ -252,7 +250,7 @@
               fullName: user.displayName,
               email: user.email,
               userId: customUserId,
-              balance: 0.00,
+              balance: 100.00, // Balance updated to 100 for Google Signup too
               photoURL: user.photoURL,
               createdAt: new Date(),
               authProvider: "Google"
