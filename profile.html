@@ -519,7 +519,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -535,23 +535,22 @@
         const db = getFirestore(app);
 
         setPersistence(auth, browserLocalPersistence).then(async () => {
-            const savedPhone = localStorage.getItem("activeUserPhone");
-            const savedUid = localStorage.getItem("activeUserUid");
+            const savedPhone = localStorage.getItem("activeUserPhone") || localStorage.getItem("userPhone") || localStorage.getItem("phone");
+            const savedUid = localStorage.getItem("activeUserUid") || localStorage.getItem("userId");
             
-            if (savedUid) {
-                await loadUserProfile(savedUid);
-            } else if (savedPhone) {
-                await loadUserProfile(savedPhone);
+            let identifier = savedUid || savedPhone;
+            if (identifier) {
+                await loadUserProfile(identifier);
             }
 
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
+                    const userIdent = user.phoneNumber || user.uid || user.email;
                     localStorage.setItem("activeUserUid", user.uid);
-                    await loadUserProfile(user.uid);
+                    await loadUserProfile(userIdent);
                 } else {
-                    const activePhone = localStorage.getItem("activeUserPhone");
-                    if (activePhone) {
-                        await loadUserProfile(activePhone);
+                    if (identifier) {
+                        await loadUserProfile(identifier);
                     } else {
                         window.location.href = "login.html";
                     }
@@ -561,24 +560,55 @@
             console.error("Persistence error:", error);
         });
 
-        async function loadUserProfile(identifier) {
+        async function loadUserProfile(phoneOrId) {
+            if (!phoneOrId) return;
+            let cleanPhone = phoneOrId.toString().trim();
+            if(!cleanPhone.startsWith("+") && cleanPhone.length === 11) {
+                cleanPhone = "+88" + cleanPhone;
+            }
+
             try {
-                const userDocRef = doc(db, "Users", identifier);
-                const docSnap = await getDoc(userDocRef);
-                
+                let userDocData = null;
+
+                // ১. Direct doc check by cleanPhone
+                let docRef = doc(db, "Users", cleanPhone);
+                let docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    
-                    const userName = data.fullName || data.name || "User Account";
+                    userDocData = docSnap.data();
+                } else {
+                    // ২. Query by phoneNumber field
+                    let q = query(collection(db, "Users"), where("phoneNumber", "==", cleanPhone));
+                    let querySnap = await getDocs(q);
+                    if (!querySnap.empty) {
+                        userDocData = querySnap.docs[0].data();
+                    } else {
+                        // ৩. Direct doc check by phoneOrId / userId
+                        let docRef2 = doc(db, "Users", phoneOrId);
+                        let docSnap2 = await getDoc(docRef2);
+                        if (docSnap2.exists()) {
+                            userDocData = docSnap2.data();
+                        } else {
+                            // ৪. Query by userId field
+                            let q2 = query(collection(db, "Users"), where("userId", "==", phoneOrId));
+                            let querySnap2 = await getDocs(q2);
+                            if (!querySnap2.empty) {
+                                userDocData = querySnap2.docs[0].data();
+                            }
+                        }
+                    }
+                }
+
+                if (userDocData) {
+                    const userName = userDocData.fullName || userDocData.name || "User Account";
                     document.getElementById("userNameDisplay").innerText = userName;
 
-                    document.getElementById("userContactDisplay").innerText = data.phoneNumber || identifier;
+                    document.getElementById("userContactDisplay").innerText = userDocData.phoneNumber || phoneOrId;
                     
-                    const userBalance = data.balance !== undefined ? data.balance : (data.userBalance || 0);
+                    const userBalance = userDocData.balance !== undefined ? userDocData.balance : (userDocData.userBalance || 0);
                     document.getElementById("userBalanceDisplay").innerText = "Balance: ৳ " + Number(userBalance).toLocaleString();
                 } else {
                     document.getElementById("userNameDisplay").innerText = "User Account";
-                    document.getElementById("userContactDisplay").innerText = identifier;
+                    document.getElementById("userContactDisplay").innerText = phoneOrId;
                     document.getElementById("userBalanceDisplay").innerText = "Balance: ৳ 0";
                 }
             } catch (error) {
@@ -590,6 +620,8 @@
             try {
                 localStorage.removeItem("activeUserPhone");
                 localStorage.removeItem("activeUserUid");
+                localStorage.removeItem("userPhone");
+                localStorage.removeItem("userId");
                 await signOut(auth);
                 window.location.href = "login.html";
             } catch (error) {
