@@ -92,11 +92,11 @@
     <div class="deposit-container">
         
         <div class="notice-card">
-            <strong><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশিকা:</strong>
-            <p>• সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০। এর কম ডিপোজিট গ্রহণযোগ্য নয়।</p>
-            <p>• প্রথমে উপরের যেকোনো পেমেন্ট অপশন সিলেক্ট করুন।</p>
-            <p>• তারপর যে নম্বর দেওয়া আছে সেই নম্বরে ক্যাশআউট করুন।</p>
-            <p>• এরপর সেই নম্বরে যত টাকা পাঠিয়েছেন এবং ট্রানজেকশন আইডি বসান।</p>
+            <strong><i class="fa-solid fa-circle-info"></i> Guruttopurno Nirdeshika:</strong>
+            <p>• Nimnoro deposit amount ৳600. Er kom deposit grohonjogy noy.</p>
+            <p>• Prothome uporer jekono payment option select korun.</p>
+            <p>• Tarpor je number dewa ache sei nombore cashout korun.</p>
+            <p>• Erpor sei nombore yoto taka pathiyechen ebong transaction ID bosan.</p>
         </div>
 
         <div class="deposit-card">
@@ -165,7 +165,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -293,21 +293,18 @@
         async function findUserDocByReferralCode(refCode) {
             if (!refCode) return null;
             try {
-                // ১. userId ফিল্ড দিয়ে খোঁজা
                 const q = query(collection(db, "Users"), where("userId", "==", refCode));
                 const snap = await getDocs(q);
                 if (!snap.empty) {
                     return { ref: snap.docs[0].ref, data: snap.docs[0].data() };
                 }
 
-                // ২. phoneNumber ফিল্ড দিয়ে খোঁজা
                 const qPhone = query(collection(db, "Users"), where("phoneNumber", "==", refCode));
                 const snapPhone = await getDocs(qPhone);
                 if (!snapPhone.empty) {
-                    return { ref: snapPhone.docs[0].ref, data: snapPhonePhone.docs[0].data() };
+                    return { ref: snapPhone.docs[0].ref, data: snapPhone.docs[0].data() };
                 }
 
-                // ৩. ডিরেক্ট ডকুমেন্ট আইডি দিয়ে চেক করা
                 const directRef = doc(db, "Users", refCode);
                 const directSnap = await getDoc(directRef);
                 if (directSnap.exists()) {
@@ -330,7 +327,7 @@
                 return;
             }
             if (!amountInput || isNaN(amount) || amount < 600) {
-                showAlert("সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০ হতে হবে।");
+                showAlert("Nimnoro deposit amount ৳600 hote hobe.");
                 return;
             }
             if (!trxId) {
@@ -363,7 +360,6 @@
 
                 await addDoc(collection(db, "Deposits"), depositData);
 
-                // ১. ইউজারের নিজের ব্যালেন্স আপডেট
                 if (currentUserDocId) {
                     const userDocRef = doc(db, "Users", currentUserDocId);
                     const userSnap = await getDoc(userDocRef);
@@ -371,12 +367,10 @@
                     if (userSnap.exists()) {
                         const userData = userSnap.data();
                         
-                        // নিজের ব্যালেন্স আপডেট
                         await updateDoc(userDocRef, {
                             balance: increment(amount)
                         });
 
-                        // ২. Level 1 Upline Update
                         const level1Code = userData.referredBy;
                         if (level1Code) {
                             const l1User = await findUserDocByReferralCode(level1Code);
@@ -385,7 +379,6 @@
                                     teamStats: { level1Deposit: increment(amount) }
                                 }, { merge: true });
 
-                                // ৩. Level 2 Upline Update
                                 const level2Code = l1User.data.referredBy;
                                 if (level2Code) {
                                     const l2User = await findUserDocByReferralCode(level2Code);
@@ -394,7 +387,6 @@
                                             teamStats: { level2Deposit: increment(amount) }
                                         }, { merge: true });
 
-                                        // ৪. Level 3 Upline Update
                                         const level3Code = l2User.data.referredBy;
                                         if (level3Code) {
                                             const l3User = await findUserDocByReferralCode(level3Code);
