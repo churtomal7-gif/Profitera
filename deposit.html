@@ -21,6 +21,19 @@
 
         .deposit-container { padding: 16px; max-width: 500px; margin: 0 auto; }
         
+        .notice-card { 
+            background: rgba(0, 255, 135, 0.05); 
+            border: 1px solid rgba(0, 255, 135, 0.2); 
+            border-radius: 14px; 
+            padding: 14px 16px; 
+            margin-bottom: 16px; 
+            font-size: 13px; 
+            color: #d1ebd9; 
+            line-height: 1.8; 
+        }
+        .notice-card strong { color: #00ff87; display: block; margin-bottom: 6px; font-size: 14px; font-family: 'Orbitron', sans-serif; }
+        .notice-card p { margin-bottom: 6px; }
+
         .deposit-card { background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.18); border-radius: 16px; padding: 18px; margin-bottom: 16px; backdrop-filter: blur(10px); }
         .section-label { font-size: 12px; font-weight: 700; color: #799988; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
@@ -85,6 +98,18 @@
 
     <div class="deposit-container">
         
+        <!-- Notice / Instructions Card -->
+        <div class="notice-card">
+            <strong><i class="fa-solid fa-circle-info"></i> 🔘 টপ-আপ নির্দেশাবলী</strong>
+            <p>১. সর্বনিম্ন টপ-আপের পরিমাণ: ৬৫০</p>
+            <p>২. টপ-আপ পরিষেবা ২৪/৭ উপলব্ধ। প্রয়োজন অনুযায়ী আপনি যেকোনো সময় টপ-আপের জন্য অনুরোধ জমা দিতে পারেন।</p>
+            <p>৩. প্রতিটি টপ-আপের আগে, অনুগ্রহ করে প্ল্যাটফর্মে প্রদর্শিত সর্বশেষ প্রাপক অ্যাকাউন্টের তথ্য নিশ্চিত করে নিন।</p>
+            <p style="color: #ffd32a;">⚠️ তহবিল আসতে দেরি এড়াতে, অতীতের প্রাপক অ্যাকাউন্ট ব্যবহার করবেন না এবং একই অ্যাকাউন্টে বারবার টপ-আপ করবেন না।</p>
+            <p>৪. পেমেন্ট সম্পন্ন করার পর, অনুগ্রহ করে পেমেন্ট ভাউচারের একটি স্ক্রিনশট দ্রুত প্ল্যাটফর্মে আপলোড করুন। সিস্টেম সাধারণত ১০-৩০ মিনিটের মধ্যে এটি প্রক্রিয়া করে। উপরের সময়ের পরেও যদি আপনার অ্যাকাউন্ট ব্যালেন্সে তহবিল না আসে, তাহলে যাচাইয়ের জন্য অনুগ্রহ করে অনলাইন গ্রাহক পরিষেবার সাথে যোগাযোগ করুন।</p>
+            <p>৫. সমস্ত টপ-আপ এবং সম্পর্কিত লেনদেন অবশ্যই প্ল্যাটফর্মের অফিসিয়াল অ্যাপ্লিকেশনের মাধ্যমে সম্পন্ন করতে হবে।</p>
+            <p style="color: #ffd32a;">⚠️ অফিসিয়াল কর্মীরা ব্যক্তিগত চ্যানেলের মাধ্যমে ট্রান্সফারের অনুরোধ জানাতে ব্যবহারকারীদের সাথে স্বতঃপ্রণোদিতভাবে যোগাযোগ করবে না, বা আপনাকে ব্যক্তিগত অ্যাকাউন্টে পেমেন্ট করতেও বলবে না।</p>
+        </div>
+
         <div class="deposit-card">
             <!-- ১. প্রথমে বিকাশ বা নগদ মেথড সিলেক্ট -->
             <div class="form-group">
@@ -103,9 +128,9 @@
 
             <!-- ২. অ্যামাউন্ট ইনপুট -->
             <div class="form-group">
-                <span class="section-label">Deposit Amount (Minimum ৳600)</span>
-                <input type="number" id="depositAmount" placeholder="Enter amount (Min 600)" oninput="updateAmountDisplay()">
-                <div class="error-tag" id="amountErrorMsg">৬০০ টাকার নিচে ডিপোজিট করা যাবে না</div>
+                <span class="section-label">Deposit Amount (Minimum ৳650)</span>
+                <input type="number" id="depositAmount" placeholder="Enter amount (Min 650)" oninput="updateAmountDisplay()">
+                <div class="error-tag" id="amountErrorMsg">৬৫০ টাকার নিচে ডিপোজিট করা যাবে না</div>
             </div>
 
             <!-- ৩. চ্যানেল সিলেক্ট অপশন -->
@@ -208,7 +233,6 @@
 
         let selectedPaymentMethod = "";
         let selectedChannel = "";
-        // অ্যাডমিন প্যানেলের Settings/paymentNumbers থেকে চারটা ফিল্ড রিসিভ করবে
         let agentNumbersData = { bkash: "", bkashCh2: "", nogod: "", nogodCh2: "" };
         let currentUserId = "";
         let currentUserEmail = "";
@@ -245,7 +269,8 @@
             const amt = document.getElementById('depositAmount').value.trim();
             const errorTag = document.getElementById('amountErrorMsg');
             
-            if (amt !== "" && Number(amt) < 600) {
+            // সর্বনিম্ন টপ-আপ অ্যামাউন্ট ৬৫০ টাকা সেট করা হয়েছে
+            if (amt !== "" && Number(amt) < 650) {
                 errorTag.style.display = 'block';
             } else {
                 errorTag.style.display = 'none';
@@ -259,7 +284,7 @@
             const amt = Number(document.getElementById('depositAmount').value.trim());
             const channelSec = document.getElementById('channelSection');
 
-            if (selectedPaymentMethod && amt >= 600) {
+            if (selectedPaymentMethod && amt >= 650) {
                 channelSec.style.display = 'block';
             } else {
                 channelSec.style.display = 'none';
@@ -277,7 +302,6 @@
             updateDisplayedNumber();
         }
 
-        // অ্যাডমিন প্যানেল থেকে আসা Channel 1 এবং Channel 2 এর নাম্বার আলাদা করে হ্যান্ডেল করা
         function updateDisplayedNumber() {
             let num = "Not Set";
             if (selectedPaymentMethod === 'bkash') {
@@ -351,8 +375,8 @@
                 showAlert("দয়া করে পেমেন্ট মাধ্যম (বিকাশ বা নগদ) সিলেক্ট করুন।");
                 return;
             }
-            if (!amountInput || isNaN(amount) || amount < 600) {
-                showAlert("সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০ হতে হবে।");
+            if (!amountInput || isNaN(amount) || amount < 650) {
+                showAlert("সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬৫০ হতে হবে।");
                 return;
             }
             if (!selectedChannel) {
