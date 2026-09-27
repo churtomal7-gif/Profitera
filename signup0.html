@@ -227,7 +227,7 @@
           for (let char of last5Digits) {
               letters += digitMap[char] || 'X';
           }
-          const customUserId = letters + last5Digits; // Example: HDEGI84579
+          const customUserId = letters + last5Digits; 
 
           const currentDate = new Date().toLocaleDateString('bn-BD');
 
@@ -239,7 +239,6 @@
               let uplineRef = null;
               let uplineSnap = null;
 
-              // Firestore-এ 'userId' ফিল্ড দিয়ে আপলাইন ইউজারকে খোঁজা হচ্ছে
               const qId = query(collection(db, "Users"), where("userId", "==", level1Code));
               const qsId = await getDocs(qId);
               
@@ -247,7 +246,6 @@
                   uplineSnap = qsId.docs[0];
                   uplineRef = doc(db, "Users", uplineSnap.id);
               } else {
-                  // ব্যাকআপ হিসেবে ফোন নাম্বার দিয়েও চেক করা যেতে পারে যদি কোডটি ফোন নাম্বার হয়
                   const phoneUplineRef = doc(db, "Users", level1Code);
                   const phoneUplineSnap = await getDoc(phoneUplineRef);
                   if (phoneUplineSnap.exists()) {
@@ -293,7 +291,7 @@
               phoneNumber: phone,
               password: password,
               userId: customUserId,
-              balance: 0.00,
+              balance: 100.00, // এখানে অটো ১০০ টাকা ব্যালেন্স সেট করা হয়েছে
               referredBy: level1Code,
               level2By: level2Code,
               level3By: level3Code,
@@ -344,7 +342,7 @@
               fullName: user.displayName,
               email: user.email,
               userId: customUserId,
-              balance: 0.00,
+              balance: 100.00, // গুগল সাইনআপেও অটো ১০০ টাকা ব্যালেন্স সেট করা হয়েছে
               referredBy: "",
               referredUsers: [],
               teamStats: {
