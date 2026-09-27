@@ -186,17 +186,13 @@
   const referralInput = document.getElementById('referral');
   
   if (refCode) {
-      refCode = refCode.trim();
-      if (refCode.startsWith("880")) {
-          refCode = "+" + refCode;
-      }
-      referralInput.value = refCode;
+      referralInput.value = refCode.trim();
       referralInput.readOnly = true; 
       referralInput.style.color = "#00ff87";
       referralInput.style.cursor = "not-allowed";
   }
 
-  // Handle Form Submit with Fixed Referral Linking
+  // Handle Form Submit with Mapped Digit-to-Alphabet Referral Code Logic
   document.getElementById('signupForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -209,10 +205,6 @@
       const password = document.getElementById('password').value;
       let referral = referralInput.value.trim();
 
-      if (referral && referral.startsWith("880") && !referral.startsWith("+")) {
-          referral = "+" + referral;
-      }
-
       try {
           const userDocRef = doc(db, "Users", phone);
           const docSnap = await getDoc(userDocRef);
@@ -224,7 +216,19 @@
               return;
           }
 
-          const customUserId = "PE-" + Math.floor(1000 + Math.random() * 9000);
+          // Generate Custom Referral Code based on last 5 digits mapping
+          const last5Digits = phone.slice(-5);
+          const digitMap = {
+              '0': 'J', '1': 'A', '2': 'B', '3': 'C', '4': 'D',
+              '5': 'E', '6': 'F', '7': 'G', '8': 'H', '9': 'I'
+          };
+          
+          let letters = '';
+          for (let char of last5Digits) {
+              letters += digitMap[char] || 'X';
+          }
+          const customUserId = letters + last5Digits; // Example: HDEGI84579
+
           const currentDate = new Date().toLocaleDateString('bn-BD');
 
           let level1Code = referral || "";
@@ -235,28 +239,20 @@
               let uplineRef = null;
               let uplineSnap = null;
 
-              // 1. Check Document ID directly
-              let directRef = doc(db, "Users", level1Code);
-              let directSnap = await getDoc(directRef);
-
-              if (directSnap.exists()) {
-                  uplineRef = directRef;
-                  uplineSnap = directSnap;
+              // Firestore-এ 'userId' ফিল্ড দিয়ে আপলাইন ইউজারকে খোঁজা হচ্ছে
+              const qId = query(collection(db, "Users"), where("userId", "==", level1Code));
+              const qsId = await getDocs(qId);
+              
+              if (!qsId.empty) {
+                  uplineSnap = qsId.docs[0];
+                  uplineRef = doc(db, "Users", uplineSnap.id);
               } else {
-                  // 2. Check phoneNumber field
-                  const qPhone = query(collection(db, "Users"), where("phoneNumber", "==", level1Code));
-                  const qsPhone = await getDocs(qPhone);
-                  if (!qsPhone.empty) {
-                      uplineSnap = qsPhone.docs[0];
-                      uplineRef = doc(db, "Users", uplineSnap.id);
-                  } else {
-                      // 3. Check userId field (e.g. PE-1234)
-                      const qId = query(collection(db, "Users"), where("userId", "==", level1Code));
-                      const qsId = await getDocs(qId);
-                      if (!qsId.empty) {
-                          uplineSnap = qsId.docs[0];
-                          uplineRef = doc(db, "Users", uplineSnap.id);
-                      }
+                  // ব্যাকআপ হিসেবে ফোন নাম্বার দিয়েও চেক করা যেতে পারে যদি কোডটি ফোন নাম্বার হয়
+                  const phoneUplineRef = doc(db, "Users", level1Code);
+                  const phoneUplineSnap = await getDoc(phoneUplineRef);
+                  if (phoneUplineSnap.exists()) {
+                      uplineSnap = phoneUplineSnap;
+                      uplineRef = phoneUplineRef;
                   }
               }
 
@@ -275,22 +271,20 @@
                       teamStats: stats
                   });
               } else {
-                  console.warn("Upline referrer not found in database for code:", level1Code);
+                  console.warn("Upline referrer not found for code:", level1Code);
               }
           }
 
           if (level2Code) {
-              let l2Ref = doc(db, "Users", level2Code);
-              let l2Snap = await getDoc(l2Ref);
-              if (!l2Snap.exists()) {
-                  const q = query(collection(db, "Users"), where("userId", "==", level2Code));
-                  const qs = await getDocs(q);
-                  if (!qs.empty) {
-                      l2Snap = qs.docs[0];
+              const qL2 = query(collection(db, "Users"), where("userId", "==", level2Code));
+              const qsL2 = await getDocs(qL2);
+              if (!qsL2.empty) {
+                  level3Code = qsL2.docs[0].data().referredBy || "";
+              } else {
+                  const l2PhoneSnap = await getDoc(doc(db, "Users", level2Code));
+                  if (l2PhoneSnap.exists()) {
+                      level3Code = l2PhoneSnap.data().referredBy || "";
                   }
-              }
-              if (l2Snap && l2Snap.exists()) {
-                  level3Code = l2Snap.data().referredBy || "";
               }
           }
 
@@ -334,7 +328,16 @@
           const result = await signInWithPopup(auth, provider);
           const user = result.user;
 
-          const customUserId = "PE-" + Math.floor(1000 + Math.random() * 9000);
+          const randomDigits = Math.floor(10000 + Math.random() * 90000).toString();
+          const digitMap = {
+              '0': 'J', '1': 'A', '2': 'B', '3': 'C', '4': 'D',
+              '5': 'E', '6': 'F', '7': 'G', '8': 'H', '9': 'I'
+          };
+          let letters = '';
+          for (let char of randomDigits) {
+              letters += digitMap[char] || 'X';
+          }
+          const customUserId = letters + randomDigits;
 
           await setDoc(doc(db, "Users", user.uid), {
               uid: user.uid,
