@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Balance & Transaction History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; outline: none !important; }
+        body { background: #020905; color: #ffffff; padding-bottom: 50px; min-height: 100vh; }
+        
+        .top-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; background: rgba(4, 28, 16, 0.85); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15); position: sticky; top: 0; z-index: 100;
+        }
+        .back-btn { color: #00ff87; font-size: 16px; text-decoration: none; width: 32px; height: 32px; background: rgba(0, 255, 135, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 135, 0.2); }
+        .header-title { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 700; color: #ffffff; }
+
+        .history-container { padding: 16px; max-width: 500px; margin: 0 auto; }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 16px;
+            scrollbar-width: none;
+        }
+        .filter-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.2);
+            color: #799988; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
+            cursor: pointer; white-space: nowrap; transition: 0.2s;
+        }
+        .tab-btn.active { background: rgba(0, 255, 135, 0.15); border-color: #00ff87; color: #00ff87; }
+
+        /* History Card / List */
+        .history-card { 
+            background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.18); 
+            border-radius: 16px; padding: 16px; backdrop-filter: blur(10px); 
+        }
+        .section-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00ff87; margin-bottom: 12px; }
+
+        .transaction-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid rgba(0, 255, 135, 0.1);
+        }
+        .transaction-item:last-child { border-bottom: none; }
+        
+        .tx-left { display: flex; align-items: center; gap: 12px; }
+        .tx-icon {
+            width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .tx-icon.deposit { background: rgba(0, 255, 135, 0.15); color: #00ff87; border: 1px solid rgba(0, 255, 135, 0.3); }
+        .tx-icon.withdraw { background: rgba(255, 165, 2, 0.15); color: #ffa502; border: 1px solid rgba(255, 165, 2, 0.3); }
+        .tx-icon.invest { background: rgba(0, 150, 255, 0.15); color: #0096ff; border: 1px solid rgba(0, 150, 255, 0.3); }
+        .tx-icon.commission { background: rgba(180, 0, 255, 0.15); color: #b400ff; border: 1px solid rgba(180, 0, 255, 0.3); }
+
+        .tx-details h4 { font-size: 13px; font-weight: 700; color: #ffffff; margin-bottom: 3px; }
+        .tx-details span { font-size: 11px; color: #799988; display: block; }
+
+        .tx-right { text-align: right; }
+        .tx-amount { font-family: 'Orbitron', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+        .tx-amount.positive { color: #00ff87; }
+        .tx-amount.negative { color: #ff4757; }
+        
+        .tx-status { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+        .status-success, .status-approved { background: rgba(0, 255, 135, 0.1); color: #00ff87; }
+        .status-pending { background: rgba(255, 165, 2, 0.1); color: #ffa502; }
+        .status-failed, .status-rejected { background: rgba(255, 71, 87, 0.1); color: #ff4757; }
+
+        .empty-state { text-align: center; padding: 30px 0; color: #799988; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <a href="profile.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="header-title">Transaction History</div>
+        <div style="width:32px"></div>
+    </div>
+
+    <div class="history-container">
+        
+        <!-- Filter Category Tabs -->
+        <div class="filter-tabs">
+            <button class="tab-btn active" onclick="filterTransactions('all', this)">All</button>
+            <button class="tab-btn" onclick="filterTransactions('Deposit', this)">Deposit</button>
+            <button class="tab-btn" onclick="filterTransactions('Withdraw', this)">Withdraw</button>
+            <button class="tab-btn" onclick="filterTransactions('Invest', this)">Invest</button>
+            <button class="tab-btn" onclick="filterTransactions('Commission', this)">Commission</button>
+        </div>
+
+        <div class="history-card">
+            <div class="section-title">All Activities</div>
+            <div id="transactionListContainer">
+                <div class="empty-state">Loading history...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+            authDomain: "profitera.firebaseapp.com",
+            projectId: "profitera",
+            storageBucket: "profitera.firebasestorage.app",
+            messagingSenderId: "510851771912",
+            appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allTransactions = [];
+        let currentUserId = "";
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+            } 
+            if (!currentUserId) {
+                currentUserId = localStorage.getItem("activeUserPhone") || localStorage.getItem("activeUserUid") || localStorage.getItem("userEmail");
+            }
+
+            if (!currentUserId) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            fetchAllHistory(currentUserId);
+        });
+
+        async function fetchAllHistory(userId) {
+            const container = document.getElementById('transactionListContainer');
+            allTransactions = [];
+
+            try {
+                // ১. Deposits কালেকশন থেকে ডাটা আনা
+                const depositQuery = query(collection(db, "Deposits"), where("userId", "==", userId));
+                const depositSnap = await getDocs(depositQuery);
+                depositSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    allTransactions.push({
+                        type: 'Deposit',
+                        title: `Deposit (${data.method || 'BKASH/NAGAD'})`,
+                        amount: data.amount || 0,
+                        status: data.status || 'Pending',
+                        date: data.timestamp ? data.timestamp.toDate() : new Date(),
+                        isPositive: true,
+                        icon: 'fa-arrow-down',
+                        details: `TrxID: ${data.trxId || 'N/A'}`
+                    });
+                });
+
+                // ২. Withdraws কালেকশন থেকে ডাটা আনা
+                const withdrawQuery = query(collection(db, "Withdraws"), where("userId", "==", userId));
+                const withdrawSnap = await getDocs(withdrawQuery);
+                withdrawSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    const reqAmt = data.requestedAmount || data.amount || 0;
+                    allTransactions.push({
+                        type: 'Withdraw',
+                        title: `Withdraw (${data.method || 'BKASH'})`,
+                        amount: reqAmt,
+                        status: data.status || 'Pending',
+                        date: data.timestamp ? data.timestamp.toDate() : new Date(),
+                        isPositive: false,
+                        icon: 'fa-arrow-up',
+                        details: `A/C: ${data.accountNumber || 'N/A'}`
+                    });
+                });
+
+                // ৩. Invests / UserInvestments কালেকশন থেকে ডাটা আনা (প্ল্যান কেনা)
+                const investQuery = query(collection(db, "Investments"), where("userId", "==", userId));
+                const investSnap = await getDocs(investQuery);
+                investSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    allTransactions.push({
+                        type: 'Invest',
+                        title: `Plan Purchase: ${data.planName || 'Investment Plan'}`,
+                        amount: data.amount || data.price || 0,
+                        status: 'Success',
+                        date: data.timestamp ? data.timestamp.toDate() : new Date(),
+                        isPositive: false,
+                        icon: 'fa-briefcase',
+                        details: `Daily Profit: ৳${data.dailyProfit || 0}`
+                    });
+                });
+
+                // ৪. Commissions / Bonuses কালেকশন থেকে ডাটা আনা
+                const commissionQuery = query(collection(db, "Commissions"), where("userId", "==", userId));
+                const commissionSnap = await getDocs(commissionQuery);
+                commissionSnap.forEach(docSnap => {
+                    const data = docSnap.data();
+                    allTransactions.push({
+                        type: 'Commission',
+                        title: data.title || 'Referral Commission',
+                        amount: data.amount || 0,
+                        status: 'Success',
+                        date: data.timestamp ? data.timestamp.toDate() : new Date(),
+                        isPositive: true,
+                        icon: 'fa-gift',
+                        details: data.description || 'Bonus added'
+                    });
+                });
+
+                // তারিখ অনুযায়ী লেটেস্ট ট্রানজেকশন উপরে সাজানো (Sorting)
+                allTransactions.sort((a, b) => b.date - a.date);
+
+                renderTransactions(allTransactions);
+
+            } catch (e) {
+                console.error("Error fetching history:", e);
+                container.innerHTML = `<div class="empty-state" style="color: #ff4757;">Failed to load history data.</div>`;
+            }
+        }
+
+        window.renderTransactions = function(dataList) {
+            const container = document.getElementById('transactionListContainer');
+            
+            if (dataList.length === 0) {
+                container.innerHTML = `<div class="empty-state">No transaction records found.</div>`;
+                return;
+            }
+
+            container.innerHTML = "";
+            dataList.forEach(tx => {
+                let iconClass = 'deposit';
+                if (tx.type === 'Withdraw') iconClass = 'withdraw';
+                if (tx.type === 'Invest') iconClass = 'invest';
+                if (tx.type === 'Commission') iconClass = 'commission';
+
+                const formattedDate = tx.date.toLocaleString('en-US', { 
+                    month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                });
+
+                const itemHTML = `
+                    <div class="transaction-item">
+                        <div class="tx-left">
+                            <div class="tx-icon ${iconClass}">
+                                <i class="fa-solid ${tx.icon}"></i>
+                            </div>
+                            <div class="tx-details">
+                                <h4>${tx.title}</h4>
+                                <span>${tx.details} • ${formattedDate}</span>
+                            </div>
+                        </div>
+                        <div class="tx-right">
+                            <div class="tx-amount ${tx.isPositive ? 'positive' : 'negative'}">
+                                ${tx.isPositive ? '+' : '-'}৳${tx.amount.toFixed(2)}
+                            </div>
+                            <span class="tx-status status-${tx.status.toLowerCase()}">${tx.status}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += itemHTML;
+            });
+        }
+
+        window.filterTransactions = function(type, btnElement) {
+            //setActive tab UI
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            if (type === 'all') {
+                renderTransactions(allTransactions);
+            } else {
+                const filtered = allTransactions.filter(item => item.type === type);
+                renderTransactions(filtered);
+            }
+        }
+    </script>
+</body>
+</html>
