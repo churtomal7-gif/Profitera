@@ -3,169 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ProfitEra - Deposit</title>
+    <title>ProfitEra - Account</title>
+    <!-- Font Awesome & Google Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; outline: none !important; }
-        body { background: #020905; color: #ffffff; padding-bottom: 50px; min-height: 100vh; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+
+        body {
+            background: #020905;
+            color: #ffffff;
+            padding-bottom: 90px;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Top Header */
         .top-header {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 18px; background: rgba(4, 28, 16, 0.85); backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(0, 255, 135, 0.15); position: sticky; top: 0; z-index: 100;
-        }
-        .back-btn { color: #00ff87; font-size: 16px; text-decoration: none; width: 32px; height: 32px; background: rgba(0, 255, 135, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(0, 255, 135, 0.2); }
-        .header-title { font-family: 'Orbitron', sans-serif; font-size: 17px; font-weight: 700; color: #ffffff; }
-
-        .deposit-container { padding: 16px; max-width: 500px; margin: 0 auto; }
-        
-        .notice-card { 
-            background: rgba(0, 255, 135, 0.05); 
-            border: 1px solid rgba(0, 255, 135, 0.2); 
-            border-radius: 14px; 
-            padding: 14px 16px; 
-            margin-bottom: 16px; 
-            font-size: 13px; 
-            color: #d1ebd9; 
-            line-height: 1.8; 
-        }
-        .notice-card strong { color: #00ff87; display: block; margin-bottom: 4px; font-size: 14px; font-family: 'Orbitron', sans-serif; }
-        .notice-card p { margin-bottom: 6px; }
-
-        .deposit-card { background: rgba(4, 28, 16, 0.65); border: 1px solid rgba(0, 255, 135, 0.18); border-radius: 16px; padding: 18px; margin-bottom: 16px; backdrop-filter: blur(10px); }
-        .section-label { font-size: 12px; font-weight: 700; color: #799988; text-transform: uppercase; margin-bottom: 8px; display: block; }
-
-        .methods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
-        .method-box { 
-            background: rgba(0, 255, 135, 0.03); 
-            border: 1.5px solid rgba(0, 255, 135, 0.15); 
-            border-radius: 12px; 
-            padding: 12px; 
-            text-align: center; 
-            cursor: pointer; 
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            padding: 14px 18px;
+            background: rgba(4, 28, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 135, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        /* Account Container */
+        .account-container {
+            padding: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Profile Section */
+        .profile-card {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .profile-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .profile-contact {
+            font-size: 12px;
+            color: #799988;
+            font-weight: 600;
+        }
+
+        .profile-balance {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            font-weight: 800;
+            color: #00ff87;
+            margin-top: 4px;
+        }
+
+        .profile-svg-box {
+            width: 58px;
+            height: 58px;
+            background: rgba(0, 255, 135, 0.1);
+            border: 2px solid rgba(0, 255, 135, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(0, 255, 135, 0.2);
+        }
+
+        .profile-svg-box svg {
+            width: 30px;
+            height: 30px;
+            fill: #00ff87;
+        }
+
+        /* Section Title "Wallet" */
+        .wallet-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #799988;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            margin-left: 4px;
+        }
+
+        /* Menu Options Card Box */
+        .menu-card-box {
+            background: rgba(4, 28, 16, 0.65);
+            border: 1px solid rgba(0, 255, 135, 0.18);
+            border-radius: 16px;
+            padding: 6px 16px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(0, 255, 135, 0.08);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .menu-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 255, 135, 0.08);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 255, 135, 0.15);
+        }
+
+        .menu-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: #00ff87;
+        }
+
+        .menu-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .menu-arrow {
+            color: #799988;
+            font-size: 14px;
+        }
+
+        /* Logout Button */
+        .logout-btn-box {
+            width: 100%;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.1);
+            margin-top: 10px;
+        }
+
+        /* Floating Customer Service Section */
+        .cs-floating-container {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .cs-main-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 255, 135, 0.4);
+            cursor: pointer;
+            border: 2px solid #020905;
+        }
+
+        .cs-main-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #01140a;
+        }
+
+        .cs-dropdown-list {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+            background: rgba(4, 28, 16, 0.95);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            padding: 10px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+        }
+
+        .cs-dropdown-item {
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: rgba(0, 255, 135, 0.05);
+            border: 1px solid rgba(0, 255, 135, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
             transition: 0.2s;
         }
-        .method-box.active { background: rgba(0, 255, 135, 0.12); border-color: #00ff87; box-shadow: 0 0 10px rgba(0, 255, 135, 0.2); }
-        .method-box img { width: 26px; height: 26px; object-fit: contain; border-radius: 50%; }
-        .method-name { font-size: 13px; font-weight: 700; color: #ffffff; }
 
-        .agent-box { background: rgba(2, 9, 5, 0.6); border: 1px dashed rgba(0, 255, 135, 0.4); border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .agent-info span { font-size: 11px; color: #799988; }
-        .agent-info h4 { font-family: 'Orbitron', sans-serif; font-size: 15px; color: #00ff87; margin-top: 2px; }
-        .copy-btn { background: rgba(0, 255, 135, 0.15); border: 1px solid rgba(0, 255, 135, 0.3); color: #00ff87; padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; }
+        .cs-dropdown-item:hover {
+            background: rgba(0, 255, 135, 0.2);
+            color: #00ff87;
+        }
 
-        .form-group { margin-bottom: 14px; }
-        input { width: 100%; background: rgba(0, 255, 135, 0.05); border: 1px solid rgba(0, 255, 135, 0.2); padding: 12px 14px; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; }
-        input:focus { border-color: #00ff87; }
+        /* Language Selection Modal */
+        .custom-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(2, 9, 5, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-        .submit-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 14px; border-radius: 12px; font-weight: 800; font-size: 14px; width: 100%; cursor: pointer; text-transform: uppercase; margin-top: 6px; transition: 0.3s; }
-        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .modal-content {
+            background: #041c10;
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            padding: 22px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 255, 135, 0.15);
+        }
 
-        .history-title { font-family: 'Orbitron', sans-serif; font-size: 14px; color: #00ff87; margin-bottom: 10px; }
-        .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid rgba(0,255,135,0.1); font-size: 12px; }
-        th { color: #00ff87; font-family: 'Orbitron', sans-serif; font-size: 10px; }
-        .status-pending { color: #ffa502; font-weight: 700; }
-        .status-success { color: #00ff87; font-weight: 700; }
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 18px;
+        }
 
-        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: none; align-items: center; justify-content: center; z-index: 11000; }
-        .custom-alert-box { background: linear-gradient(135deg, #042810 0%, #02140a 100%); border: 2px solid #00ff87; border-radius: 16px; width: 85%; max-width: 320px; padding: 22px; text-align: center; }
-        .custom-alert-msg { font-size: 14px; font-weight: 700; color: #ffffff; margin-bottom: 20px; }
-        .custom-alert-btn { background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); color: #01140a; border: none; padding: 10px 24px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+        .modal-option-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            background: rgba(0, 255, 135, 0.05);
+            border: 1px solid rgba(0, 255, 135, 0.2);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .modal-option-btn:hover {
+            background: rgba(0, 255, 135, 0.15);
+        }
+
+        .flag-icon {
+            font-size: 20px;
+        }
+
+        .close-modal-btn {
+            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
+            color: #01140a;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
+            background: rgba(3, 20, 11, 0.95); backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(0, 255, 135, 0.2);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding: 0 10px;
+        }
+
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #618270; text-decoration: none; font-size: 10px; font-weight: 600; width: 20%; }
+        .nav-item svg { width: 20px; height: 20px; fill: currentColor; margin-bottom: 3px; }
+        .nav-item.active { color: #00ff87; }
+        .nav-item.home-btn { position: relative; top: -12px; }
+        .nav-item.home-btn .icon-box { width: 52px; height: 52px; background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 18px rgba(0, 255, 135, 0.5); border: 4px solid #020905; }
+        .nav-item.home-btn svg { width: 26px; height: 26px; fill: #01140a; margin-bottom: 0; }
+        .nav-item.home-btn span { color: #00ff87; font-weight: 800; margin-top: 2px; }
     </style>
 </head>
 <body>
 
+    <!-- Top Header -->
     <div class="top-header">
-        <a href="profile.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
-        <div class="header-title">Deposit Money</div>
-        <div style="width:32px"></div>
+        <div class="header-title" id="langHeaderTitle">Account</div>
     </div>
 
-    <div class="deposit-container">
+    <!-- Account Container -->
+    <div class="account-container">
         
-        <div class="notice-card">
-            <strong><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশিকা:</strong>
-            <p>• সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০। এর কম ডিপোজিট গ্রহণযোগ্য নয়।</p>
-            <p>• প্রথমে উপরের যেকোনো পেমেন্ট অপশন সিলেক্ট করুন।</p>
-            <p>• তারপর যে নম্বর দেওয়া আছে সেই নম্বরে ক্যাশআউট করুন।</p>
-            <p>• এরপর সেই নম্বরে যত টাকা পাঠিয়েছেন এবং ট্রানজেকশন আইডি বসান।</p>
-        </div>
-
-        <div class="deposit-card">
-            <span class="section-label">Select Method</span>
-            <div class="methods-grid">
-                <div class="method-box active" id="bkashMethod" onclick="selectMethod('bkash')">
-                    <img src="bkash.png" alt="bKash">
-                    <div class="method-name">bKash</div>
-                </div>
-                <div class="method-box" id="nogodMethod" onclick="selectMethod('nogod')">
-                    <img src="nogod.png" alt="Nogod">
-                    <div class="method-name">Nogod</div>
-                </div>
+        <!-- Profile Section -->
+        <div class="profile-card">
+            <div class="profile-info">
+                <div class="profile-name" id="userNameDisplay">Loading...</div>
+                <div class="profile-contact" id="userContactDisplay">Loading...</div>
+                <div class="profile-balance" id="userBalanceDisplay">Balance: ৳ ০.০০</div>
             </div>
-
-            <div class="agent-box">
-                <div class="agent-info">
-                    <span id="methodLabel">bKash Agent Number</span>
-                    <h4 id="agentNumberDisplay">Loading...</h4>
-                </div>
-                <button class="copy-btn" onclick="copyNumber()">Copy</button>
-            </div>
-
-            <div class="form-group">
-                <span class="section-label">Deposit Amount (Minimum ৳600)</span>
-                <input type="number" id="depositAmount" placeholder="Enter amount (Min 600)">
-            </div>
-
-            <div class="form-group">
-                <span class="section-label">Transaction ID (TrxID)</span>
-                <input type="text" id="trxIdInput" placeholder="Enter TrxID">
-            </div>
-
-            <button class="submit-btn" id="submitBtn" onclick="submitDeposit()">Submit Deposit</button>
-        </div>
-
-        <!-- Deposit History Section -->
-        <div class="deposit-card">
-            <div class="history-title">My Deposit History</div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th>Amount</th>
-                            <th>TrxID</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userDepositHistory">
-                        <tr><td colspan="4" style="text-align:center; color:#799988;">Loading history...</td></tr>
-                    </tbody>
-                </table>
+            <div class="profile-svg-box">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
             </div>
         </div>
+
+        <!-- Wallet Section Title -->
+        <div class="wallet-section-title" id="langWalletTitle">Wallet</div>
+
+        <!-- Menu Options Box -->
+        <div class="menu-card-box">
+            <a href="deposit.html" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    </div>
+                    <span class="menu-text" id="langDeposit">Deposit</span>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow"></i>
+            </a>
+
+            <a href="withdraw.html" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24"><path d="M2 12c0 5.52 4.48 10 10 10s10-4.48 10-10S17.52 2 12 2 2 6.48 2 12zm11-4h-2v4H8l4 4 4-4h-3V8z"/></svg>
+                    </div>
+                    <span class="menu-text" id="langWithdraw">Withdrawal</span>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow"></i>
+            </a>
+
+            <a href="balance_history.html" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    </div>
+                    <span class="menu-text" id="langBalanceHistory">Balance History</span>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow"></i>
+            </a>
+        </div>
+
+        <!-- Settings / App Options Box -->
+        <div class="menu-card-box">
+            <a href="reset_password.html" class="menu-item">
+                <div class="menu-left">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                    </div>
+                    <span class="menu-text" id="langResetPass">Reset Password</span>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow"></i>
+            </a>
+
+            <div class="menu-item" onclick="openLangModal()">
+                <div class="menu-left">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95c-.32-1.25-.78-2.45-1.38-3.56 1.84.63 3.37 1.91 4.33 3.56zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56-1.84-.63-3.37-1.91-4.33-3.56zm2.95-8H5.08c.96-1.65 2.49-2.93 4.33-3.56C8.81 5.55 8.35 6.75 8.03 8zM12 19.96c-.83-1.2-1.48-2.53-1.91-3.96h3.82c-.43 1.43-1.08 2.76-1.91 3.96zM14.34 14H9.66c-.09-.66-.16-1.32-.16-2 0-.68.07-1.34.16-2h4.68c.09.66.16 1.32.16 2 0 .68-.07 1.34-.16 2zm.25 5.56c.6-1.11 1.06-2.31 1.38-3.56h2.95c-.96 1.65-2.49 2.93-4.33 3.56zM16.36 14c.08-.66.14-1.32.14-2 0-.68-.06-1.34-.14-2h3.38c.16.64.26 1.31.26 2s-.1 1.36-.26 2h-3.38z"/></svg>
+                    </div>
+                    <span class="menu-text" id="langLangText">Language</span>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow"></i>
+            </div>
+
+            <div class="menu-item" onclick="alert('App download link will be available soon!')">
+                <div class="menu-left">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    </div>
+                    <span class="menu-text" id="langAppInstall">App install korun</span>
+                </div>
+                <i class="fa-solid fa-chevron-right menu-arrow"></i>
+            </div>
+        </div>
+
+        <!-- Logout Button -->
+        <button class="logout-btn-box" id="langLogout">Logout</button>
 
     </div>
 
-    <div class="custom-alert-overlay" id="customAlert">
-        <div class="custom-alert-box">
-            <div class="custom-alert-msg" id="customAlertMsg">Message</div>
-            <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
+    <!-- Floating Customer Service Dropdown -->
+    <div class="cs-floating-container">
+        <div class="cs-dropdown-list" id="csDropdown">
+            <a href="https://t.me/xr_pain" target="_blank" class="cs-dropdown-item">
+                <i class="fa-brands fa-telegram" style="color: #00ff87;"></i> OFFICIAL TELEGRAM ID
+            </a>
+            <a href="https://t.me/xrtradercomunity" target="_blank" class="cs-dropdown-item">
+                <i class="fa-solid fa-bullhorn" style="color: #00ff87;"></i> OFFICIAL CHANNEL
+            </a>
+            <a href="https://t.me/xrtradercomunity" target="_blank" class="cs-dropdown-item">
+                <i class="fa-solid fa-headset" style="color: #00ff87;"></i> OFFICIAL SUPPORT
+            </a>
+        </div>
+        
+        <div class="cs-main-btn" onclick="toggleCsDropdown()">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
         </div>
     </div>
 
+    <!-- Language Selection Modal -->
+    <div class="custom-modal" id="langModal">
+        <div class="modal-content">
+            <div class="modal-title" id="modalLangTitle">Select Language</div>
+            
+            <div class="modal-option-btn" onclick="changeLanguage('bn')">
+                <span class="flag-icon">🇧🇩</span>
+                <span>Bangla</span>
+            </div>
+            
+            <div class="modal-option-btn" onclick="changeLanguage('en')">
+                <span class="flag-icon">🇺🇸</span>
+                <span>English</span>
+            </div>
+
+            <button class="close-modal-btn" id="modalCloseBtn" onclick="closeLangModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a href="income.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+            <span>Income</span>
+        </a>
+
+        <a href="refer.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <span>Refer</span>
+        </a>
+
+        <a href="dashboard.html" class="nav-item home-btn">
+            <div class="icon-box">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            </div>
+            <span>Home</span>
+        </a>
+
+        <a href="task.html" class="nav-item">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            <span>Task</span>
+        </a>
+
+        <a href="profile.html" class="nav-item active">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>Account</span>
+        </a>
+    </div>
+
+    <!-- Firebase SDKs & Profile Logic with Persistence -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, setPersistence, browserLocalPersistence, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -180,238 +534,142 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let selectedPaymentMethod = "bkash";
-        let agentNumbersData = { bkash: "", nogod: "" };
-        let currentUserId = "";
-        let currentUserDocId = ""; // ইউজারের মূল ফায়ারবেজ ডকুমেন্ট আইডি বা ফোন নম্বর
-
-        window.showAlert = function(msg) {
-            document.getElementById('customAlertMsg').innerText = msg;
-            document.getElementById('customAlert').style.display = 'flex';
-        }
-        window.closeCustomAlert = function() {
-            document.getElementById('customAlert').style.display = 'none';
-        }
-
-        window.selectMethod = function(method) {
-            selectedPaymentMethod = method;
-            document.getElementById('bkashMethod').classList.remove('active');
-            document.getElementById('nogodMethod').classList.remove('active');
+        setPersistence(auth, browserLocalPersistence).then(async () => {
+            const savedPhone = localStorage.getItem("activeUserPhone") || localStorage.getItem("userPhone") || localStorage.getItem("phone");
+            const savedUid = localStorage.getItem("activeUserUid") || localStorage.getItem("userId");
             
-            if(method === 'bkash') {
-                document.getElementById('bkashMethod').classList.add('active');
-                document.getElementById('methodLabel').innerText = "bKash Agent Number";
-                document.getElementById('agentNumberDisplay').innerText = agentNumbersData.bkash || "Not Set";
-            } else {
-                document.getElementById('nogodMethod').classList.add('active');
-                document.getElementById('methodLabel').innerText = "Nogod Agent Number";
-                document.getElementById('agentNumberDisplay').innerText = agentNumbersData.nogod || "Not Set";
+            let identifier = savedUid || savedPhone;
+            if (identifier) {
+                await loadUserProfile(identifier);
             }
-        }
 
-        window.copyNumber = function() {
-            const numText = document.getElementById('agentNumberDisplay').innerText;
-            if(numText && numText !== "Not Set") {
-                navigator.clipboard.writeText(numText);
-                showAlert("Number copied!");
-            }
-        }
-
-        async function fetchAgentNumbers() {
-            try {
-                const docSnap = await getDoc(doc(db, "Settings", "paymentNumbers"));
-                if (docSnap.exists()) {
-                    agentNumbersData = docSnap.data();
-                    selectMethod('bkash');
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const userIdent = user.phoneNumber || user.uid || user.email;
+                    localStorage.setItem("activeUserUid", user.uid);
+                    await loadUserProfile(userIdent);
+                } else {
+                    if (identifier) {
+                        await loadUserProfile(identifier);
+                    } else {
+                        window.location.href = "login.html";
+                    }
                 }
-            } catch (e) { console.error(e); }
-        }
+            });
+        }).catch((error) => {
+            console.error("Persistence error:", error);
+        });
 
-        async function resolveUserData(phoneOrId) {
-            if (!phoneOrId) return null;
+        async function loadUserProfile(phoneOrId) {
+            if (!phoneOrId) return;
             let cleanPhone = phoneOrId.toString().trim();
             if(!cleanPhone.startsWith("+") && cleanPhone.length === 11) {
                 cleanPhone = "+88" + cleanPhone;
             }
 
             try {
-                // ১. সরাসরি Users কালেকশনে ফোন নম্বর দিয়ে ডকুমেন্ট চেক করা
-                const docRef = doc(db, "Users", cleanPhone);
-                const docSnap = await getDoc(docRef);
+                let userDocData = null;
+
+                // ১. Direct doc check by cleanPhone
+                let docRef = doc(db, "Users", cleanPhone);
+                let docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
-                    currentUserDocId = cleanPhone;
-                    return docSnap.data().userId || cleanPhone;
-                }
-
-                // ২. phoneNumber ফিল্ড দিয়ে কুয়েরি করা
-                const q = query(collection(db, "Users"), where("phoneNumber", "==", cleanPhone));
-                const querySnap = await getDocs(q);
-                if (!querySnap.empty) {
-                    currentUserDocId = querySnap.docs[0].id;
-                    return querySnap.docs[0].data().userId;
-                }
-
-                // ৩. সরাসরি userId দিয়ে ডকুমেন্ট চেক করা
-                const docRef2 = doc(db, "Users", phoneOrId);
-                const docSnap2 = await getDoc(docRef2);
-                if (docSnap2.exists()) {
-                    currentUserDocId = phoneOrId;
-                    return docSnap2.data().userId || phoneOrId;
-                }
-            } catch (e) {
-                console.error("Error resolving user:", e);
-            }
-            return phoneOrId;
-        }
-
-        async function initUserSession() {
-            let rawIdentifier = localStorage.getItem("activeUserPhone") || 
-                                localStorage.getItem("userPhone") || 
-                                localStorage.getItem("phone") || 
-                                localStorage.getItem("activeUserUid") || 
-                                localStorage.getItem("userId") || 
-                                sessionStorage.getItem("activeUserPhone") || 
-                                sessionStorage.getItem("phone");
-
-            if (!rawIdentifier) {
-                const user = auth.currentUser;
-                if (user) {
-                    rawIdentifier = user.phoneNumber || user.uid || user.email;
-                }
-            }
-
-            if (!rawIdentifier) {
-                window.location.href = "login.html";
-                return;
-            }
-
-            currentUserId = await resolveUserData(rawIdentifier);
-            fetchAgentNumbers();
-            loadUserHistory(currentUserId);
-        }
-
-        onAuthStateChanged(auth, () => { initUserSession(); });
-        initUserSession();
-
-        // রেফারারের লেভেল ১ ডিপোজিট স্ট্যাটাস আপডেট করার ফাংশন
-        async function updateReferrerLevel1(userDocId, depositAmount) {
-            try {
-                if (!userDocId) return;
-                const userDocRef = doc(db, "Users", userDocId);
-                const userSnap = await getDoc(userDocRef);
-                
-                if (userSnap.exists()) {
-                    const userData = userSnap.data();
-                    const referredByCode = userData.referredBy; // যার লিংকে একাউন্ট খোলা হয়েছে (যেমন PE-5096 বা রেফারেল কোড)
-
-                    if (referredByCode) {
-                        // রেফারার কোড দিয়ে আপলাইন বা রেফারার ইউজারকে খোঁজা
-                        const refQuery = query(collection(db, "Users"), where("userId", "==", referredByCode));
-                        const refSnap = await getDocs(refQuery);
-
-                        if (!refSnap.empty) {
-                            const referrerDocRef = refSnap.docs[0].ref;
-                            // আপলাইনের teamStats.level1Deposit বা লেভেল ১ কাউন্ট আপডেট করা
-                            await updateDoc(referrerDocRef, {
-                                "teamStats.level1Deposit": increment(depositAmount)
-                            });
+                    userDocData = docSnap.data();
+                } else {
+                    // ২. Query by phoneNumber field
+                    let q = query(collection(db, "Users"), where("phoneNumber", "==", cleanPhone));
+                    let querySnap = await getDocs(q);
+                    if (!querySnap.empty) {
+                        userDocData = querySnap.docs[0].data();
+                    } else {
+                        // ৩. Direct doc check by phoneOrId / userId
+                        let docRef2 = doc(db, "Users", phoneOrId);
+                        let docSnap2 = await getDoc(docRef2);
+                        if (docSnap2.exists()) {
+                            userDocData = docSnap2.data();
+                        } else {
+                            // ৪. Query by userId field
+                            let q2 = query(collection(db, "Users"), where("userId", "==", phoneOrId));
+                            let querySnap2 = await getDocs(q2);
+                            if (!querySnap2.empty) {
+                                userDocData = querySnap2.docs[0].data();
+                            }
                         }
                     }
                 }
-            } catch (err) {
-                console.error("Error updating referrer stats:", err);
+
+                if (userDocData) {
+                    const userName = userDocData.fullName || userDocData.name || "User Account";
+                    document.getElementById("userNameDisplay").innerText = userName;
+
+                    document.getElementById("userContactDisplay").innerText = userDocData.phoneNumber || phoneOrId;
+                    
+                    const userBalance = userDocData.balance !== undefined ? userDocData.balance : (userDocData.userBalance || 0);
+                    document.getElementById("userBalanceDisplay").innerText = "Balance: ৳ " + Number(userBalance).toLocaleString();
+                } else {
+                    document.getElementById("userNameDisplay").innerText = "User Account";
+                    document.getElementById("userContactDisplay").innerText = phoneOrId;
+                    document.getElementById("userBalanceDisplay").innerText = "Balance: ৳ 0";
+                }
+            } catch (error) {
+                console.error("Error loading profile data:", error);
             }
         }
 
-        window.submitDeposit = async function() {
-            const amountInput = document.getElementById('depositAmount').value.trim();
-            const trxId = document.getElementById('trxIdInput').value.trim();
-            const amount = Number(amountInput);
-            const submitBtn = document.getElementById('submitBtn');
-
-            if (!currentUserId) {
-                showAlert("Session expired. Please log in again.");
-                return;
-            }
-            if (!amountInput || isNaN(amount) || amount < 600) {
-                showAlert("সর্বনিম্ন ডিপোজিট অ্যামাউন্ট ৳৬০০ হতে হবে।");
-                return;
-            }
-            if (!trxId) {
-                showAlert("Enter the TrxID.");
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.innerText = "Submitting...";
-
+        document.getElementById("langLogout").addEventListener("click", async () => {
             try {
-                const checkTrxQuery = query(collection(db, "Deposits"), where("trxId", "==", trxId));
-                const checkTrxSnap = await getDocs(checkTrxQuery);
-
-                if (!checkTrxSnap.empty) {
-                    showAlert("This Transaction ID (TrxID) has already been used!");
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "Submit Deposit";
-                    return;
-                }
-
-                const depositData = {
-                    userId: currentUserId,
-                    amount: amount,
-                    method: selectedPaymentMethod.toUpperCase(),
-                    trxId: trxId,
-                    status: "Pending",
-                    timestamp: serverTimestamp()
-                };
-
-                await addDoc(collection(db, "Deposits"), depositData);
-
-                // ডিপোজিট সফলভাবে সাবমিট হওয়ার সাথে সাথে রেফারারের লেভেল ১ কাউন্টে যোগ করা
-                if (currentUserDocId) {
-                    await updateReferrerLevel1(currentUserDocId, amount);
-                }
-
-                showAlert("Deposit request submitted successfully!");
-                
-                document.getElementById('depositAmount').value = '';
-                document.getElementById('trxIdInput').value = '';
-                loadUserHistory(currentUserId);
-            } catch (e) {
-                showAlert("Error: " + e.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Submit Deposit";
+                localStorage.removeItem("activeUserPhone");
+                localStorage.removeItem("activeUserUid");
+                localStorage.removeItem("userPhone");
+                localStorage.removeItem("userId");
+                await signOut(auth);
+                window.location.href = "login.html";
+            } catch (error) {
+                console.error("Logout error:", error);
             }
+        });
+    </script>
+
+    <script>
+        function toggleCsDropdown() {
+            const dropdown = document.getElementById('csDropdown');
+            dropdown.style.display = dropdown.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        async function loadUserHistory(userId) {
-            const tbody = document.getElementById('userDepositHistory');
-            try {
-                const q = query(collection(db, "Deposits"), where("userId", "==", userId));
-                const querySnapshot = await getDocs(q);
-                
-                if(querySnapshot.empty) {
-                    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#799988;">No history found</td></tr>`;
-                    return;
-                }
+        function openLangModal() {
+            document.getElementById('langModal').style.display = 'flex';
+        }
+        function closeLangModal() {
+            document.getElementById('langModal').style.display = 'none';
+        }
 
-                tbody.innerHTML = "";
-                querySnapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const isSuccess = data.status === "Success" || data.status === "Approved";
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${data.method}</td>
-                        <td>৳${data.amount}</td>
-                        <td>${data.trxId}</td>
-                        <td><span class="${isSuccess ? 'status-success' : 'status-pending'}">${data.status}</span></td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (e) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Failed to load history</td></tr>`;
+        function changeLanguage(lang) {
+            if (lang === 'bn') {
+                document.getElementById('langHeaderTitle').innerText = 'অ্যাকাউন্ট';
+                document.getElementById('langWalletTitle').innerText = 'ওয়ালেট';
+                document.getElementById('langDeposit').innerText = 'ডিপোজিট';
+                document.getElementById('langWithdraw').innerText = 'উত্তোলন (Withdrawal)';
+                document.getElementById('langBalanceHistory').innerText = 'ব্যালেন্স হিস্ট্রি';
+                document.getElementById('langResetPass').innerText = 'পাসওয়ার্ড পরিবর্তন (Reset)';
+                document.getElementById('langLangText').innerText = 'ভাষা (Language)';
+                document.getElementById('langAppInstall').innerText = 'অ্যাপ ইনস্টল করুন';
+                document.getElementById('langLogout').innerText = 'লগআউট';
+                document.getElementById('modalLangTitle').innerText = 'ভাষা নির্বাচন করুন';
+                document.getElementById('modalCloseBtn').innerText = 'বন্ধ করুন';
+            } else {
+                document.getElementById('langHeaderTitle').innerText = 'Account';
+                document.getElementById('langWalletTitle').innerText = 'Wallet';
+                document.getElementById('langDeposit').innerText = 'Deposit';
+                document.getElementById('langWithdraw').innerText = 'Withdrawal';
+                document.getElementById('langBalanceHistory').innerText = 'Balance History';
+                document.getElementById('langResetPass').innerText = 'Reset Password';
+                document.getElementById('langLangText').innerText = 'Language';
+                document.getElementById('langAppInstall').innerText = 'App install korun';
+                document.getElementById('langLogout').innerText = 'Logout';
+                document.getElementById('modalLangTitle').innerText = 'Select Language';
+                document.getElementById('modalCloseBtn').innerText = 'Close';
             }
+            closeLangModal();
         }
     </script>
 </body>
