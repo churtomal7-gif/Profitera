@@ -84,6 +84,7 @@
         th { color: #00ff87; font-family: 'Orbitron', sans-serif; font-size: 10px; }
         .status-pending { color: #ffa502; font-weight: 700; }
         .status-success { color: #00ff87; font-weight: 700; }
+        .status-rejected { color: #ff4757; font-weight: 700; }
 
         .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); display: none; align-items: center; justify-content: center; z-index: 11000; }
         .custom-alert-box { background: linear-gradient(135deg, #042810 0%, #02140a 100%); border: 2px solid #00ff87; border-radius: 16px; width: 85%; max-width: 320px; padding: 22px; text-align: center; }
@@ -267,7 +268,6 @@
                 return;
             }
 
-            // সর্বনিম্ন উত্তোলনের পরিমাণ ৳২২০ চেক
             if (requestedAmount < 220) {
                 showAlert("সর্বনিম্ন উত্তোলনের পরিমাণ হলো ৳২২০");
                 return;
@@ -279,7 +279,6 @@
             }
 
             try {
-                // দৈনিক উইথড্র লিমিট চেক (সর্বোচ্চ ২টি)
                 const todayStr = new Date().toISOString().split('T')[0];
                 const withdrawsQuery = query(
                     collection(db, "Withdraws"), 
@@ -304,7 +303,6 @@
                     return;
                 }
 
-                // কোনো ফি কাটা ছাড়া পুরো অ্যামাউন্ট ব্যালেন্স থেকে বিয়োগ করা হচ্ছে
                 const newBalance = currentBalance - requestedAmount;
 
                 const withdrawData = {
@@ -354,6 +352,12 @@
                 querySnapshot.forEach((docSnap) => {
                     const data = docSnap.data();
                     const isSuccess = data.status === "Success" || data.status === "Approved";
+                    const isRejected = data.status === "Rejected";
+
+                    let statusClass = 'status-pending';
+                    if (isSuccess) statusClass = 'status-success';
+                    else if (isRejected) statusClass = 'status-rejected';
+
                     const reqAmt = data.requestedAmount !== undefined ? data.requestedAmount : data.amount;
                     const getAmount = data.netAmount !== undefined ? data.netAmount : data.amount;
                     const row = document.createElement('tr');
@@ -361,7 +365,7 @@
                         <td>${data.method}</td>
                         <td>৳${reqAmt}</td>
                         <td>৳${getAmount}</td>
-                        <td><span class="${isSuccess ? 'status-success' : 'status-pending'}">${data.status}</span></td>
+                        <td><span class="${statusClass}">${data.status}</span></td>
                     `;
                     tbody.appendChild(row);
                 });
