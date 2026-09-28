@@ -1,1 +1,371 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProfitEra - Financial Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; outline: none !important; }
+        html, body { height: 100vh; width: 100vw; overflow: hidden; background: #020905; color: #ffffff; position: relative; }
+        body::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 350px; height: 350px; background: rgba(0, 255, 135, 0.08); filter: blur(120px); border-radius: 50%; pointer-events: none; }
+        .wrapper { position: relative; z-index: 10; height: 100%; width: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 20px 20px 16px 20px; overflow-y: auto; }
+        .brand-section { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .brand-logo-wrapper { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px; }
+        .brand-logo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(0, 255, 135, 0.5); box-shadow: 0 0 10px rgba(0, 255, 135, 0.4); }
+        .brand-section h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 800; letter-spacing: 1.5px; background: linear-gradient(135deg, #ffffff 0%, #00ff87 60%, #60efff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 15px rgba(0, 255, 135, 0.3); }
+        .brand-section p.subtitle { font-size: 12px; color: #799988; margin-top: 2px; letter-spacing: 0.5px; }
+        .header-sub-bar { display: flex; align-items: center; gap: 12px; margin-top: 8px; background: rgba(0, 255, 135, 0.04); border: 1px solid rgba(0, 255, 135, 0.15); padding: 4px 12px; border-radius: 20px; }
+        .sub-item { font-size: 10px; color: #00ff87; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .sub-dot { width: 3px; height: 3px; background: #3b6d53; border-radius: 50%; }
+        .form-container { width: 100%; max-width: 380px; margin-bottom: 10px; }
+        .input-group { margin-bottom: 11px; }
+        .input-group label { display: block; margin-bottom: 4px; font-size: 10px; font-weight: 700; color: #00ff87; letter-spacing: 1px; text-transform: uppercase; }
+        .input-box { position: relative; display: flex; align-items: center; background: rgba(4, 28, 16, 0.7); border: 1px solid rgba(0, 255, 135, 0.2); border-radius: 12px; backdrop-filter: blur(10px); }
+        .input-box i.icon { position: absolute; left: 14px; color: #3b6d53; font-size: 14px; }
+        .input-box input { width: 100%; padding: 10px 14px 10px 40px; background: transparent; border: none; color: #ffffff; font-size: 13px; box-shadow: none !important; }
+        input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:focus { -webkit-text-fill-color: #ffffff !important; -webkit-box-shadow: 0 0 0px 1000px #041c10 inset !important; outline: none !important; border: none !important; }
+        .phone-box { padding-left: 14px; }
+        .flag-code { display: flex; align-items: center; gap: 6px; user-select: none; padding-right: 4px; }
+        .bd-flag { width: 18px; height: 12px; background: #006a4e; border-radius: 2px; position: relative; }
+        .bd-flag::after { content: ''; width: 7px; height: 7px; background: #f42a41; border-radius: 50%; position: absolute; left: 35%; top: 20%; }
+        .code { color: #00ff87; font-weight: 700; font-size: 13px; }
+        .phone-box input { padding-left: 6px !important; }
+        .input-box:focus-within { border-color: #00ff87; box-shadow: 0 0 12px rgba(0, 255, 135, 0.25) !important; background: rgba(4, 38, 21, 0.9); }
+        .input-box:focus-within i.icon { color: #00ff87; }
+        .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff87 0%, #00b359 100%); border: none; border-radius: 12px; color: #01140a; font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 6px 20px rgba(0, 255, 135, 0.25); }
+        .btn-submit:active { transform: scale(0.98); }
+        .divider { display: flex; align-items: center; margin: 12px 0; color: #3b6d53; font-size: 9px; font-weight: 700; letter-spacing: 1px; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(0, 255, 135, 0.15); }
+        .divider span { padding: 0 10px; }
+        .btn-google { width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(0, 255, 135, 0.15); border-radius: 12px; color: #e2e8f0; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; }
+        .footer-text { text-align: center; margin-top: 12px; font-size: 11px; color: #799988; }
+        .footer-text a { color: #00ff87; text-decoration: none; font-weight: 700; }
+        .trust-footer { width: 100%; max-width: 380px; text-align: center; padding-top: 10px; border-top: 1px solid rgba(0, 255, 135, 0.1); }
+        .badges-row { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 8px; }
+        .trust-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #8dae9d; font-weight: 600; }
+        .trust-item svg { width: 14px; height: 14px; }
+        .legal-links { font-size: 10px; color: #557766; display: flex; justify-content: center; gap: 12px; }
+        .legal-links a { color: #557766; text-decoration: none; }
 
+        /* Custom Notification Popup Styling */
+        #customAlert { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-50px); background: rgba(4, 28, 16, 0.95); border: 1px solid #00ff87; color: #ffffff; padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; z-index: 9999; box-shadow: 0 10px 30px rgba(0, 255, 135, 0.3); backdrop-filter: blur(10px); opacity: 0; transition: all 0.3s ease; display: flex; align-items: center; gap: 10px; pointer-events: none; }
+        #customAlert.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+        #customAlert i { color: #00ff87; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<!-- Custom Notification Box -->
+<div id="customAlert"><i class="fa-solid fa-circle-exclamation"></i> <span id="alertText">Message</span></div>
+
+<div class="wrapper">
+    <div class="brand-section">
+        <div class="brand-logo-wrapper">
+            <img src="profitera.png" alt="ProfitEra Logo" class="brand-logo" onerror="this.style.display='none'">
+            <h1>ProfitEra</h1>
+        </div>
+        <p class="subtitle">Start your financial journey with us</p>
+
+        <div class="header-sub-bar">
+            <div class="sub-item"><i class="fa-solid fa-shield-halved"></i> Secure Platform</div>
+            <div class="sub-dot"></div>
+            <div class="sub-item"><i class="fa-solid fa-bolt"></i> Fast Payout</div>
+        </div>
+    </div>
+
+    <div class="form-container">
+        <form id="signupForm" autocomplete="off">
+            <div class="input-group">
+                <label>Full Name</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-user icon"></i>
+                    <input type="text" id="name" required autocomplete="off">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Phone Number</label>
+                <div class="input-box phone-box">
+                    <div class="flag-code">
+                        <div class="bd-flag"></div>
+                        <span class="code">+880</span>
+                    </div>
+                    <input type="tel" id="phone" required autocomplete="off">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-lock icon"></i>
+                    <input type="password" id="password" required autocomplete="new-password">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Referral Code</label>
+                <div class="input-box">
+                    <i class="fa-solid fa-gem icon"></i>
+                    <input type="text" id="referral" autocomplete="off" placeholder="Optional">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Create Account</button>
+        </form>
+
+        <div class="divider">
+            <span>OR CONTINUE WITH</span>
+        </div>
+
+        <button type="button" class="btn-google" id="googleBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            Google
+        </button>
+
+        <div class="footer-text">
+            Already registered? <a href="login.html">Login</a>
+        </div>
+    </div>
+
+    <div class="trust-footer">
+        <div class="badges-row">
+            <div class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#00FF87" fill-opacity="0.15"/><path d="M10.5 15.5L7 12L8.41 10.59L10.5 12.67L15.59 7.58L17 9L10.5 15.5Z" fill="#00FF87"/></svg>
+                <span>Google Verified</span>
+            </div>
+            <div class="trust-item">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 6V12C3 17.52 6.84 22.74 12 24C17.16 22.74 21 17.52 21 12V6L12 2Z" fill="#00FF87" fill-opacity="0.15" stroke="#00FF87" stroke-width="1.5"/><path d="M12 8V16M8 12H16" stroke="#00FF87" stroke-width="1.5" stroke-linecap="round"/></svg>
+                <span>FINRA Regulated</span>
+            </div>
+        </div>
+        <div class="legal-links">
+            <span>© 2026 ProfitEra</span> • <a href="#">Terms</a> • <a href="#">Privacy Policy</a>
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK Scripts -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
+    authDomain: "profitera.firebaseapp.com",
+    projectId: "profitera",
+    storageBucket: "profitera.firebasestorage.app",
+    messagingSenderId: "510851771912",
+    appId: "1:510851771912:web:2b1ea236545239ba072bbd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  function showCustomAlert(message) {
+      const alertBox = document.getElementById('customAlert');
+      document.getElementById('alertText').innerText = message;
+      alertBox.classList.add('show');
+      setTimeout(() => {
+          alertBox.classList.remove('show');
+      }, 3000);
+  }
+
+  // Auto URL Referral Code Catch & Lock
+  const urlParams = new URLSearchParams(window.location.search);
+  let refCode = urlParams.get('ref');
+  const referralInput = document.getElementById('referral');
+  
+  if (refCode) {
+      referralInput.value = refCode.trim();
+      referralInput.readOnly = true; 
+      referralInput.style.color = "#00ff87";
+      referralInput.style.cursor = "not-allowed";
+  }
+
+  // Handle Form Submit with Mapped Digit-to-Alphabet Referral Code Logic
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.innerText = "Creating Account...";
+      submitBtn.disabled = true;
+
+      const name = document.getElementById('name').value;
+      const rawPhone = document.getElementById('phone').value.trim();
+      const phone = "+880" + rawPhone;
+      const password = document.getElementById('password').value;
+      let referral = referralInput.value.trim();
+
+      try {
+          const userDocRef = doc(db, "Users", phone);
+          const docSnap = await getDoc(userDocRef);
+
+          if (docSnap.exists()) {
+              showCustomAlert("এই নাম্বারে ইতিমধ্যে একটি একাউন্ট রয়েছে!");
+              submitBtn.innerText = "Create Account";
+              submitBtn.disabled = false;
+              return;
+          }
+
+          // Generate Custom Referral Code based on last 5 digits mapping
+          const last5Digits = phone.slice(-5);
+          const digitMap = {
+              '0': 'J', '1': 'A', '2': 'B', '3': 'C', '4': 'D',
+              '5': 'E', '6': 'F', '7': 'G', '8': 'H', '9': 'I'
+          };
+          
+          let letters = '';
+          for (let char of last5Digits) {
+              letters += digitMap[char] || 'X';
+          }
+          const customUserId = letters + last5Digits; 
+
+          const currentDate = new Date().toLocaleDateString('bn-BD');
+
+          let level1Code = referral || "";
+          let level2Code = "";
+          let level3Code = "";
+
+          if (level1Code) {
+              let uplineRef = null;
+              let uplineSnap = null;
+
+              const qId = query(collection(db, "Users"), where("userId", "==", level1Code));
+              const qsId = await getDocs(qId);
+              
+              if (!qsId.empty) {
+                  uplineSnap = qsId.docs[0];
+                  uplineRef = doc(db, "Users", uplineSnap.id);
+              } else {
+                  const phoneUplineRef = doc(db, "Users", level1Code);
+                  const phoneUplineSnap = await getDoc(phoneUplineRef);
+                  if (phoneUplineSnap.exists()) {
+                      uplineSnap = phoneUplineSnap;
+                      uplineRef = phoneUplineRef;
+                  }
+              }
+
+              if (uplineSnap && uplineSnap.exists()) {
+                  const l1Data = uplineSnap.data();
+                  level2Code = l1Data.referredBy || "";
+                  
+                  let currentReferred = l1Data.referredUsers || [];
+                  currentReferred.push({ phone: phone, date: currentDate });
+
+                  let stats = l1Data.teamStats || { todayAccounts: 0, level1Deposit: 0, level2Deposit: 0, level3Deposit: 0, todayDeposit: 0, todayWithdraw: 0 };
+                  stats.todayAccounts = (Number(stats.todayAccounts) || 0) + 1;
+
+                  await updateDoc(uplineRef, {
+                      referredUsers: currentReferred,
+                      teamStats: stats
+                  });
+              } else {
+                  console.warn("Upline referrer not found for code:", level1Code);
+              }
+          }
+
+          if (level2Code) {
+              const qL2 = query(collection(db, "Users"), where("userId", "==", level2Code));
+              const qsL2 = await getDocs(qL2);
+              if (!qsL2.empty) {
+                  level3Code = qsL2.docs[0].data().referredBy || "";
+              } else {
+                  const l2PhoneSnap = await getDoc(doc(db, "Users", level2Code));
+                  if (l2PhoneSnap.exists()) {
+                      level3Code = l2PhoneSnap.data().referredBy || "";
+                  }
+              }
+          }
+
+          await setDoc(userDocRef, {
+              fullName: name,
+              phoneNumber: phone,
+              password: password,
+              userId: customUserId,
+              balance: 100.00, // এখানে অটো ১০০ টাকা ব্যালেন্স সেট করা হয়েছে
+              referredBy: level1Code,
+              level2By: level2Code,
+              level3By: level3Code,
+              referredUsers: [],
+              teamStats: {
+                  todayAccounts: 0,
+                  level1Deposit: 0,
+                  level2Deposit: 0,
+                  level3Deposit: 0,
+                  todayDeposit: 0,
+                  todayWithdraw: 0
+              },
+              createdAt: new Date(),
+              authProvider: "Phone"
+          });
+
+          sessionStorage.setItem("activeUserPhone", phone);
+          localStorage.setItem("activeUserPhone", phone);
+          window.location.href = "dashboard.html";
+      } catch (error) {
+          console.error("Signup Error:", error);
+          showCustomAlert("Error: " + error.message);
+          submitBtn.innerText = "Create Account";
+          submitBtn.disabled = false;
+      }
+  });
+
+  // Handle Google Login
+  document.getElementById('googleBtn').addEventListener('click', async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+          const result = await signInWithPopup(auth, provider);
+          const user = result.user;
+
+          const randomDigits = Math.floor(10000 + Math.random() * 90000).toString();
+          const digitMap = {
+              '0': 'J', '1': 'A', '2': 'B', '3': 'C', '4': 'D',
+              '5': 'E', '6': 'F', '7': 'G', '8': 'H', '9': 'I'
+          };
+          let letters = '';
+          for (let char of randomDigits) {
+              letters += digitMap[char] || 'X';
+          }
+          const customUserId = letters + randomDigits;
+
+          await setDoc(doc(db, "Users", user.uid), {
+              uid: user.uid,
+              fullName: user.displayName,
+              email: user.email,
+              userId: customUserId,
+              balance: 100.00, // গুগল সাইনআপেও অটো ১০০ টাকা ব্যালেন্স সেট করা হয়েছে
+              referredBy: "",
+              referredUsers: [],
+              teamStats: {
+                  todayAccounts: 0,
+                  level1Deposit: 0,
+                  level2Deposit: 0,
+                  level3Deposit: 0,
+                  todayDeposit: 0,
+                  todayWithdraw: 0
+              },
+              photoURL: user.photoURL,
+              createdAt: new Date(),
+              authProvider: "Google"
+          }, { merge: true });
+
+          sessionStorage.setItem("activeUserUid", user.uid);
+          localStorage.setItem("activeUserUid", user.uid);
+          window.location.href = "dashboard.html";
+      } catch (error) {
+          showCustomAlert("Google Sign-In Error: " + error.message);
+      }
+  });
+</script>
+
+</body>
+</html>
