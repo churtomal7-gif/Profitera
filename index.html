@@ -156,7 +156,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAtiy7GaMSGC_HUzVUD_lfHFGOp7UQ-Uxw",
@@ -171,7 +171,6 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Custom Alert Function
   function showCustomAlert(message) {
       const alertBox = document.getElementById('customAlert');
       document.getElementById('alertText').innerText = message;
@@ -181,7 +180,6 @@
       }, 3000);
   }
 
-  // Auto URL Referral Code Fill
   const urlParams = new URLSearchParams(window.location.search);
   const refCode = urlParams.get('ref');
   if (refCode) {
@@ -203,10 +201,10 @@
       const referral = document.getElementById('referral').value;
 
       try {
-          const userDocRef = doc(db, "Users", phone);
-          const docSnap = await getDoc(userDocRef);
+          const q = query(collection(db, "Users"), where("phoneNumber", "==", phone));
+          const querySnapshot = await getDocs(q);
 
-          if (docSnap.exists()) {
+          if (!querySnapshot.empty) {
               showCustomAlert("এই নাম্বার একাউন্ট রয়েছে!");
               submitBtn.innerText = "Create Account";
               submitBtn.disabled = false;
@@ -215,13 +213,14 @@
 
           const customUserId = "PE-" + Math.floor(1000 + Math.random() * 9000);
 
-          // Save user to Firestore with 100 balance auto added
+          const userDocRef = doc(db, "Users", phone);
           await setDoc(userDocRef, {
               fullName: name,
               phoneNumber: phone,
+              email: phone,
               password: password,
               userId: customUserId,
-              balance: 100.00, // Balance updated to 100
+              balance: 100.00,
               referralCode: referral || "",
               createdAt: new Date(),
               authProvider: "Phone"
@@ -250,7 +249,7 @@
               fullName: user.displayName,
               email: user.email,
               userId: customUserId,
-              balance: 100.00, // Balance updated to 100 for Google Signup too
+              balance: 100.00,
               photoURL: user.photoURL,
               createdAt: new Date(),
               authProvider: "Google"
